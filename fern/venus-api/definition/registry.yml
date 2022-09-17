@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+imports: 
+  org: org.yml
+
+types:
+
+  GenerateRegistryTokenRequest: 
+    properties: 
+      orgId: org.OrgId
+  
+  RegistryTokens: 
+    properties: 
+      npm: NpmRegistryToken
+      maven: MavenRegistryToken
+  
+  NpmRegistryToken: 
+    properties: 
+      token: string
+  
+  MavenRegistryToken: 
+    properties: 
+      username: string
+      password: string
+
+  RegistryPermission: 
+    enum: 
+      - READ
+      - WRITE
+  
+  RegistryType: 
+    enum: 
+      - NPM
+      - MAVEN
+      - PYPI
+  
+  CheckRegistryPermissionRequest: 
+    properties: 
+      permission: RegistryPermission
+      token: string
+      registryType: RegistryType
+
+services:
+  http:
+    RegistryService:
+      auth: false
+      base-path: /registry
+      endpoints:
+
+        generateRegistryToken: 
+          method: POST
+          path: /token
+          request: GenerateRegistryTokenRequest
+          response: RegistryTokens
+          errors: 
+            - org.OrgNotFoundError
+        
+        hasRegistryPermission: 
+          method: POST
+          path: /read
+          request: CheckRegistryPermissionRequest
+          response: boolean
+          errors: 
+            - org.OrgNotFoundError

@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+types:
+
+  OrgId: string
+
+  GeneratorId: string
+
+  CreateOrgRequest: 
+    properties: 
+      orgId: string
+  
+services:
+  http:
+    OrgService:
+      auth: false
+      base-path: /orgs
+      endpoints:
+
+        createOrg: 
+          method: POST
+          path: /create
+          request: CreateOrgRequest
+          errors: 
+            - OrgAlreadyExistsError
+
+errors:
+  OrgNotFoundError: 
+    http: 
+      statusCode: 404
+  OrgAlreadyExistsError:
+    http:
+      statusCode: 400
