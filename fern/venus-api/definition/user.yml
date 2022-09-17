@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+types:
+  User:
+    properties:
+      username: string
+  
+  OrganizationsPage:
+    properties:
+      organizations: list<commons.OrganizationId>
+      nextPage: optional<integer> 
+
+
+services:
+  http:
+    UserService:
+      auth: false # TODO make true
+      base-path: /users
+      endpoints:
+
+        create: 
+          method: POST
+          path: /create
+          errors:
+            - commons.UnauthorizedError
+            - UserAleadyExistsError
+        
+        get:
+          method: GET
+          path: /
+          response: User
+        
+        getOrganizations:
+          method: GET
+          path: /organizations
+          query-parameters:
+            pageId: integer
+          response: OrganizationsPage
+        
+        belongsToOrganization:
+          method: GET
+          path: /belongs-to-organization/{organizationId}
+          path-parameters:
+            organizationId: commons.OrganizationId
+          response: boolean
+
+          
+errors:
+  UserAleadyExistsError:
+    http:
+      statusCode: 409
