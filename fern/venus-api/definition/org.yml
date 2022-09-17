@@ -2,13 +2,13 @@
 
 types:
 
-  OrgId: string
+  OrganizationId: string
 
   GeneratorId: string
 
   CreateOrgRequest: 
     properties: 
-      orgId: string
+      organizationId: OrganizationId
   
 services:
   http:
