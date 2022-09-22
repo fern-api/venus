@@ -1,0 +1,10 @@
+types:
+  OrganizationId: string
+  UserId: string
+errors:
+  UserIdDoesNotExistError:
+    http:
+      statusCode: 404
+  UnauthorizedError:
+    http:
+      statusCode: 401

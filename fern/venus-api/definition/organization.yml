@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+types:
+  CreateOrganizationRequest: 
+    properties: 
+      organizationId: commons.OrganizationId
+
+  UserReference:
+    union:
+      userId: commons.UserId
+      emailAddress: string
+  
+services:
+  http:
+    OrganizationService:
+      auth: false # TODO make true
+      base-path: /organizations
+      endpoints:
+
+        create: 
+          method: POST
+          path: /create
+          request: CreateOrganizationRequest
+          errors: 
+            - commons.UnauthorizedError
+            - OrganizationAlreadyExistsError
+          
+        # addMember:
+        #   method: POST
+        #   path: /add-members
+        #   request: UserReference
+        #   errors:
+        #     - commons.UnauthorizedError
+        #     - commons.UserIdDoesNotExistError
+        
+errors:
+  OrganizationAlreadyExistsError:
+    http:
+      statusCode: 409
