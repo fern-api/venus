@@ -27,13 +27,13 @@ services:
             - commons.UnauthorizedError
             - OrganizationAlreadyExistsError
           
-        addMember:
-          method: POST
-          path: /add-members
-          request: UserReference
-          errors:
-            - commons.UnauthorizedError
-            - commons.UserIdDoesNotExistError
+        # addMember:
+        #   method: POST
+        #   path: /add-members
+        #   request: UserReference
+        #   errors:
+        #     - commons.UnauthorizedError
+        #     - commons.UserIdDoesNotExistError
         
 errors:
   OrganizationAlreadyExistsError:
