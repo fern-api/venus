@@ -5,7 +5,7 @@ imports:
 types:
   CreateOrganizationRequest: 
     properties: 
-      organizationId: OrganizationId
+      organizationId: commons.OrganizationId
 
   UserReference:
     union:

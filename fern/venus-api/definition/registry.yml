@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
 imports: 
-  org: organization.yml
+  commons: commons.yml
 
 types:
 
   GenerateRegistryTokensRequest: 
     properties: 
-      organizationId: org.OrganizationId
+      organizationId: commons.OrganizationId
   
   RegistryTokens: 
     properties: 
@@ -24,7 +24,7 @@ types:
 
   CheckRegistryPermissionRequest: 
     properties: 
-      organizationId: org.OrganizationId
+      organizationId: commons.OrganizationId
       token: RegistryToken
 
   RegistryToken: 
