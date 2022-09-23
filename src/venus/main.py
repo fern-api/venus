@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+
 from venus import organization_service, registry_service
 
 app = FastAPI()
