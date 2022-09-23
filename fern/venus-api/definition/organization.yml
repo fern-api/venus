@@ -3,15 +3,15 @@
 imports:
   commons: commons.yml
 types:
-  CreateOrganizationRequest: 
-    properties: 
+  CreateOrganizationRequest:
+    properties:
       organizationId: commons.OrganizationId
 
   UserReference:
     union:
       userId: commons.UserId
       emailAddress: string
-  
+
 services:
   http:
     OrganizationService:
@@ -19,14 +19,14 @@ services:
       base-path: /organizations
       endpoints:
 
-        create: 
+        create:
           method: POST
           path: /create
           request: CreateOrganizationRequest
-          errors: 
+          errors:
             - commons.UnauthorizedError
             - OrganizationAlreadyExistsError
-          
+
         # addMember:
         #   method: POST
         #   path: /add-members
@@ -34,7 +34,7 @@ services:
         #   errors:
         #     - commons.UnauthorizedError
         #     - commons.UserIdDoesNotExistError
-        
+
 errors:
   OrganizationAlreadyExistsError:
     http:
