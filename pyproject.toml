@@ -24,7 +24,7 @@ flake8 = "^5.0.4"
 pre-commit = "^2.20.0"
 
 [tool.black]
-line-length = 120
+line-length = 80
 target-version = ['py38']
 include = '\.pyi?$'
 

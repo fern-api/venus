@@ -9,5 +9,7 @@ router = InferringRouter()
 @cbv(router)
 class OrganizationsService:
     @router.post("/organizations/create")
-    def create_organization(self, request: fern.CreateOrganizationRequest) -> None:
+    def create_organization(
+        self, request: fern.CreateOrganizationRequest
+    ) -> None:
         print("Creating organization")
