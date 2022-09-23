@@ -1,2 +1,5 @@
-draft: []
+draft:
+  - name: fernapi/fern-pydantic-model
+    version: c29059f
+    local-output: ../../app/generated/server
 release: []

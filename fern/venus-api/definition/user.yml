@@ -7,11 +7,11 @@ types:
   User:
     properties:
       username: string
-  
+
   OrganizationsPage:
     properties:
       organizations: list<commons.OrganizationId>
-      nextPage: optional<integer> 
+      nextPage: optional<integer>
 
 
 # services:
@@ -21,25 +21,25 @@ types:
 #       base-path: /users
 #       endpoints:
 
-#         create: 
+#         create:
 #           method: POST
 #           path: /create
 #           errors:
 #             - commons.UnauthorizedError
 #             - UserAleadyExistsError
-        
+
 #         get:
 #           method: GET
 #           path: /
 #           response: User
-        
+
 #         getOrganizations:
 #           method: GET
 #           path: /organizations
 #           query-parameters:
 #             pageId: integer
 #           response: OrganizationsPage
-        
+
 #         belongsToOrganization:
 #           method: GET
 #           path: /belongs-to-organization/{organizationId}
@@ -47,7 +47,7 @@ types:
 #             organizationId: commons.OrganizationId
 #           response: boolean
 
-          
+
 errors:
   UserAleadyExistsError:
     http:

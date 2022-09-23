@@ -1,34 +1,34 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
-imports: 
+imports:
   commons: commons.yml
 
 types:
 
-  GenerateRegistryTokensRequest: 
-    properties: 
+  GenerateRegistryTokensRequest:
+    properties:
       organizationId: commons.OrganizationId
-  
-  RegistryTokens: 
-    properties: 
+
+  RegistryTokens:
+    properties:
       npm: NpmRegistryToken
       maven: MavenRegistryToken
 
-  NpmRegistryToken: 
-    properties: 
+  NpmRegistryToken:
+    properties:
       token: string
-  
-  MavenRegistryToken: 
-    properties: 
+
+  MavenRegistryToken:
+    properties:
       username: string
       password: string
 
-  CheckRegistryPermissionRequest: 
-    properties: 
+  CheckRegistryPermissionRequest:
+    properties:
       organizationId: commons.OrganizationId
       token: RegistryToken
 
-  RegistryToken: 
-    union: 
+  RegistryToken:
+    union:
       npm: NpmRegistryToken
       maven: MavenRegistryToken
 
@@ -39,21 +39,21 @@ services:
       base-path: /registry
       endpoints:
 
-        generateRegistryTokens: 
+        generateRegistryTokens:
           method: POST
           path: /generate-tokens
           request: GenerateRegistryTokensRequest
           response: RegistryTokens
-          errors: 
+          errors:
             - commons.UnauthorizedError
             - OrganizationNotFoundError
-        
-        hasRegistryPermission: 
+
+        hasRegistryPermission:
           method: POST
           path: /check-permissions
           request: CheckRegistryPermissionRequest
           response: boolean
-          errors: 
+          errors:
             - commons.UnauthorizedError
             - OrganizationNotFoundError
 
