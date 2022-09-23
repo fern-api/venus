@@ -40,10 +40,10 @@ class RegistryToken(pydantic.BaseModel):
 
 class _RegistryToken:
     class Npm(NpmRegistryToken):
-        type: typing.Literal["npm"]
+        type: typing_extensions.Literal["npm"]
 
     class Maven(MavenRegistryToken):
-        type: typing.Literal["maven"]
+        type: typing_extensions.Literal["maven"]
 
 
 RegistryToken.update_forward_refs()

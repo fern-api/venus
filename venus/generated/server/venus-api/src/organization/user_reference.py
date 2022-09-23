@@ -39,14 +39,14 @@ class UserReference(pydantic.BaseModel):
 
 class _UserReference:
     class UserId(pydantic.BaseModel):
-        type: typing.Literal["userId"]
+        type: typing_extensions.Literal["userId"]
         user_id: UserId = pydantic.Field(alias="userId")
 
         class Config:
             allow_population_by_field_name = True
 
     class EmailAddress(pydantic.BaseModel):
-        type: typing.Literal["emailAddress"]
+        type: typing_extensions.Literal["emailAddress"]
         email_address: str = pydantic.Field(alias="emailAddress")
 
         class Config:
