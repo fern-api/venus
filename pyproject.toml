@@ -5,12 +5,17 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
+packages = [
+    { include = "venus", from = "src" }
+]
+
 [tool.poetry.dependencies]
 python = "^3.7"
 fastapi = "^0.85.0"
 fastapi-utils = "^0.2.1"
 uvicorn = "^0.18.3"
 pydantic = "^1.10.2"
+requests = "^2.28.1"
 
 [tool.poetry.scripts]
 start = "venus.main:start"
@@ -24,9 +29,16 @@ flake8 = "^5.0.4"
 pre-commit = "^2.20.0"
 
 [tool.black]
-line-length = 120
+line-length = 80
 target-version = ['py38']
 include = '\.pyi?$'
+
+[tool.isort]
+force_single_line = true
+combine_as_imports = true
+lines_between_types = 1
+lines_after_imports = 2
+src_paths = ["src", "tests"]
 
 [build-system]
 requires = ["poetry-core"]
