@@ -70,5 +70,4 @@ workflows:
             - fern-dev
           requires:
             - check
-            - ete-tests
             - python/test
