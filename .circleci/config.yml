@@ -26,13 +26,49 @@ jobs:
       - run:
           name: pre-commit
           command: poetry run pre-commit run --all-files
+
+  deploy-dev:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: cdk deploy
+          command: |
+            git_version="$(scripts/git-version.sh)"
+            ./docker/create_docker.sh "${git_version}"
+            cd deploy
+            npm install
+            VERSION="${git_version}" npm run cdk deploy venus-dev --require-approval never --progress events
+
 workflows:
   version: 2
   build:
     jobs:
       - fern-check:
           filters: { tags: { only: /.*/ } }
+
       - check:
           filters:
             tags:
               only: /.*/
+
+      - python/test:
+          pkg-manager: poetry
+          test-tool: pytest
+
+      - deploy-dev:
+          filters:
+            tags:
+              only: /.*/
+            # branches:
+            #   only: main
+          context:
+            - aws
+            - github
+            - fern-dev
+          requires:
+            - check
+            - ete-tests
+            - python/test

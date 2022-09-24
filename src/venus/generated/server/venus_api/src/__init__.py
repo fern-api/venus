@@ -1,9 +1,16 @@
-from .commons import OrganizationId, UserId
-from .organization import CreateOrganizationRequest, UserReference
-from .registry import (CheckRegistryPermissionRequest,
-                       GenerateRegistryTokensRequest, MavenRegistryToken,
-                       NpmRegistryToken, RegistryToken, RegistryTokens)
-from .user import OrganizationsPage, User
+from .commons import OrganizationId
+from .commons import UserId
+from .organization import CreateOrganizationRequest
+from .organization import UserReference
+from .registry import CheckRegistryPermissionRequest
+from .registry import GenerateRegistryTokensRequest
+from .registry import MavenRegistryToken
+from .registry import NpmRegistryToken
+from .registry import RegistryToken
+from .registry import RegistryTokens
+from .user import OrganizationsPage
+from .user import User
+
 
 __all__ = [
     "CheckRegistryPermissionRequest",
