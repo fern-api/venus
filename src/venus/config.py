@@ -1,5 +1,7 @@
 import os
+
 from dataclasses import dataclass
+
 
 AUTH0_DOMAIN_NAME_ENV_VAR = "AUTH0_DOMAIN_NAME"
 NURSERY_URL_ENV_VAR = "NURSERY_URL"

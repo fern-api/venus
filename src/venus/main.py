@@ -1,7 +1,10 @@
 import uvicorn
+
 from fastapi import FastAPI
 
-from venus import organization_service, registry_service
+from venus import organization_service
+from venus import registry_service
+
 
 app = FastAPI()
 app.include_router(organization_service.router)
