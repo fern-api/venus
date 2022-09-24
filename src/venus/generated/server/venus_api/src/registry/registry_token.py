@@ -8,15 +8,20 @@ import typing_extensions
 from .maven_registry_token import MavenRegistryToken
 from .npm_registry_token import NpmRegistryToken
 
+
 T_Result = typing.TypeVar("T_Result")
 
 
 class _Factory:
     def npm(self, value: NpmRegistryToken) -> RegistryToken:
-        return RegistryToken(__root__=_RegistryToken.Npm(**dict(value), type="npm"))
+        return RegistryToken(
+            __root__=_RegistryToken.Npm(**dict(value), type="npm")
+        )
 
     def maven(self, value: MavenRegistryToken) -> RegistryToken:
-        return RegistryToken(__root__=_RegistryToken.Maven(**dict(value), type="maven"))
+        return RegistryToken(
+            __root__=_RegistryToken.Maven(**dict(value), type="maven")
+        )
 
 
 class RegistryToken(pydantic.BaseModel):
@@ -26,7 +31,9 @@ class RegistryToken(pydantic.BaseModel):
         return self.__root__
 
     def visit(
-        self, npm: typing.Callable[[NpmRegistryToken], T_Result], maven: typing.Callable[[MavenRegistryToken], T_Result]
+        self,
+        npm: typing.Callable[[NpmRegistryToken], T_Result],
+        maven: typing.Callable[[MavenRegistryToken], T_Result],
     ) -> T_Result:
         if self.__root__.type == "npm":
             return npm(self.__root__)
@@ -34,7 +41,8 @@ class RegistryToken(pydantic.BaseModel):
             return maven(self.__root__)
 
     __root__: typing_extensions.Annotated[
-        typing.Union[_RegistryToken.Npm, _RegistryToken.Maven], pydantic.Field(discriminator="type")
+        typing.Union[_RegistryToken.Npm, _RegistryToken.Maven],
+        pydantic.Field(discriminator="type"),
     ]
 
 
