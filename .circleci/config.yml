@@ -60,10 +60,8 @@ workflows:
 
       - deploy-dev:
           filters:
-            tags:
-              only: /.*/
-            # branches:
-            #   only: main
+            branches:
+              only: main
           context:
             - aws
             - github
