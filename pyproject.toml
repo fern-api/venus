@@ -2,8 +2,7 @@
 name = "venus"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
-readme = "README.md"
+authors = []
 
 packages = [
     { include = "venus", from = "src" }
