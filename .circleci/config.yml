@@ -37,7 +37,7 @@ jobs:
           name: cdk deploy
           command: |
             git_version="$(scripts/git-version.sh)"
-            ./docker/create_docker.sh "${git_version}"
+            create_docker.sh "${git_version}"
             cd deploy
             npm install
             VERSION="${git_version}" npm run cdk deploy venus-dev --require-approval never --progress events
