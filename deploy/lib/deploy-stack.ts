@@ -30,8 +30,8 @@ export class VenusDeployStack extends Stack {
       vpcId: environmentInfo.vpcId,
     });
 
-    const venusSg = new SecurityGroup(this, "greenhouse-sg", {
-      securityGroupName: `greenhouse-${environmentType.toLowerCase()}`,
+    const venusSg = new SecurityGroup(this, "venus-sg", {
+      securityGroupName: `venus-${environmentType.toLowerCase()}`,
       vpc,
       allowAllOutbound: true,
     });
