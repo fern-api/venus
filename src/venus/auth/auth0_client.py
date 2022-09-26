@@ -28,14 +28,13 @@ class Auth0Client:
     def get(self) -> VenusAuth0Client:
         self._ensure_token_valid()
         auth0 = Auth0(
-            self.config.auth0_mgmt_audience,
+            self.config.auth0_domain_name,
             self.mgmt_api_token,
         )
         return VenusAuth0Client(auth0)
 
     def _ensure_token_valid(self):
         if self.mgmt_api_token is None:
-            print(self.config.auth0_domain_name)
             get_token = GetToken(self.config.auth0_domain_name)
             token = get_token.client_credentials(
                 client_id=self.config.auth0_client_id,
