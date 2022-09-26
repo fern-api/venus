@@ -8,6 +8,7 @@ from dataclasses import dataclass
 AUTH0_DOMAIN_NAME_ENV_VAR = "AUTH0_DOMAIN_NAME"
 AUTH0_CLIENT_ID_ENV_VAR = "AUTH0_CLIENT_ID"
 AUTH0_CLIENT_SECRET_ENV_VAR = "AUTH0_CLIENT_SECRET"
+AUTH0_MGMT_AUDIENCE_ENV_VAR = "AUTH0_MGMT_AUDIENCE"
 CLOUDMAP_NAME_ENV_VAR = "CLOUDMAP_NAME"
 
 
@@ -16,6 +17,7 @@ class VenusConfig:
     auth0_domain_name: str
     auth0_client_id: str
     auth0_client_secret: str
+    auth0_mgmt_audience: str
     cloudmap_name: str
 
     @staticmethod
@@ -36,6 +38,9 @@ class VenusConfig:
             ),
             auth0_client_secret=VenusConfig.__get_env_var_or_throw(
                 AUTH0_CLIENT_SECRET_ENV_VAR
+            ),
+            auth0_mgmt_audience=VenusConfig.__get_env_var_or_throw(
+                AUTH0_MGMT_AUDIENCE_ENV_VAR
             ),
             cloudmap_name=VenusConfig.__get_env_var_or_throw(
                 CLOUDMAP_NAME_ENV_VAR

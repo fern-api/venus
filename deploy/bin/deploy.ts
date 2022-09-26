@@ -31,6 +31,7 @@ async function main() {
             AUTH0_DOMAIN_NAME: "fern-dev.us.auth0.com",
             AUTH0_CLIENT_ID: "8lyAgexpGrHZLhN2i1FNPSicjupACR1r",
             AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
+            AUTH0_MGMT_AUDIENCE: "https://fern-dev.us.auth0.com/api/v2/",
             CLOUDMAP_NAME: devInfo.cloudMapNamespaceInfo.namespaceName,
           },
           {
@@ -51,6 +52,7 @@ async function main() {
             AUTH0_CLIENT_ID: "fake",
             AUTH0_CLIENT_SECRET: "fake",
             CLOUDMAP_NAME: prodInfo.cloudMapNamespaceInfo.namespaceName,
+            AUTH0_MGMT_AUDIENCE: "fake",
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
