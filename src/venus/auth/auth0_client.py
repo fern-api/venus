@@ -6,6 +6,8 @@ from auth0.v3.management import Auth0
 
 from venus.config import VenusConfig
 
+from typing import Optional
+
 
 class VenusAuth0Client:
     def __init__(self, auth0: Auth0):
@@ -25,8 +27,8 @@ class VenusAuth0Client:
 class Auth0Client:
     def __init__(self, config: VenusConfig):
         self.config = config
-        self.mgmt_api_token: str = None
-        self.expiry_time: datetime = None
+        self.mgmt_api_token: Optional[str]  = None
+        self.expiry_time: Optional[datetime] = None
 
     def get(self) -> VenusAuth0Client:
         self._ensure_token_valid()
@@ -36,8 +38,8 @@ class Auth0Client:
         )
         return VenusAuth0Client(auth0)
 
-    def _ensure_token_valid(self):
-        if self.mgmt_api_token is None or datetime.now() > self.expiry_time:
+    def _ensure_token_valid(self) -> None:
+        if self.mgmt_api_token is None or self._is_expired():
             get_token = GetToken(self.config.auth0_domain_name)
             token = get_token.client_credentials(
                 client_id=self.config.auth0_client_id,
@@ -48,3 +50,8 @@ class Auth0Client:
             self.expiry_time = datetime.now() + timedelta(
                 seconds=int(token["expires_in"]) - 1000
             )
+
+    def _is_expired(self) -> bool: 
+        if self.expiry_time is not None: 
+            return datetime.now() > self.expiry_time
+        return True
