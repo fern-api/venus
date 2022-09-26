@@ -17,6 +17,7 @@ pydantic = "^1.10.2"
 requests = "^2.28.1"
 auth0-python = "^3.23.1"
 dataclasses-json = "^0.5.7"
+types-requests = "^2.28.11"
 
 [tool.poetry.scripts]
 start = "venus.main:start"
