@@ -66,6 +66,7 @@ workflows:
             - aws
             - github
             - fern-dev
+            - venus-dev
           requires:
             - check
             - python/test

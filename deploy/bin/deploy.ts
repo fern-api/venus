@@ -20,13 +20,37 @@ async function main() {
   for (const environmentType of Object.keys(environments)) {
     switch (environmentType) {
       case EnvironmentType.Dev:
-      case EnvironmentType.Prod:
+        let environmentInfo = environments[environmentType];
         new VenusDeployStack(
           app,
           `venus-${environmentType.toLowerCase()}`,
           version,
           environmentType,
-          environments[environmentType],
+          environmentInfo,
+          {
+            AUTH0_DOMAIN_NAME: "fern-dev.us.auth0.com",
+            AUTH0_CLIENT_ID: "8lyAgexpGrHZLhN2i1FNPSicjupACR1r",
+            AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
+            CLOUDMAP_NAME: environmentInfo.cloudMapNamespaceInfo.namespaceName,
+          },
+          {
+            env: { account: "985111089818", region: "us-east-1" },
+          }
+        );
+      case EnvironmentType.Prod:
+        environmentInfo = environments[environmentType];
+        new VenusDeployStack(
+          app,
+          `venus-${environmentType.toLowerCase()}`,
+          version,
+          environmentType,
+          environmentInfo,
+          {
+            AUTH0_DOMAIN_NAME: "fake",
+            AUTH0_CLIENT_ID: "fake",
+            AUTH0_CLIENT_SECRET: "fake",
+            CLOUDMAP_NAME: environmentInfo.cloudMapNamespaceInfo.namespaceName,
+          },
           {
             env: { account: "985111089818", region: "us-east-1" },
           }
@@ -35,6 +59,14 @@ async function main() {
         return;
     }
   }
+}
+
+function getEnvVarOrThrow(envVarName: string): string {
+  const val = process.env[envVarName];
+  if (val != null) {
+    return val;
+  }
+  throw Error("Expected environment variable to be defined: " + envVarName);
 }
 
 async function getEnvironments(): Promise<Environments> {

@@ -2,6 +2,7 @@ import uvicorn
 
 from fastapi import FastAPI
 
+from venus import config
 from venus import organization_service
 from venus import registry_service
 
@@ -18,6 +19,8 @@ def health() -> None:
 
 def start() -> None:
     """Launched with `poetry run start` at root level"""
+
+    print("Config is ", config.VenusConfig.create())
 
     uvicorn.run(
         "venus.main:app",
