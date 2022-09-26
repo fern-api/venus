@@ -1,2 +1,9 @@
+.DS_Store
+dist/
+.mypy_cache/
+__pycache__/
+*.db
+venv
+*.log
+.idea
 *.tar
-*.pyc

@@ -20,6 +20,7 @@ export interface VenusEnvVariables {
   AUTH0_CLIENT_ID: string,
   AUTH0_CLIENT_SECRET: string,
   CLOUDMAP_NAME: string,
+  AUTH0_MGMT_AUDIENCE: string,
 }
 
 export class VenusDeployStack extends Stack {
