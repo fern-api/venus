@@ -37,6 +37,7 @@ async function main() {
             env: { account: "985111089818", region: "us-east-1" },
           }
         );
+        break;
       case EnvironmentType.Prod:
         environmentInfo = environments[environmentType];
         new VenusDeployStack(
@@ -55,6 +56,7 @@ async function main() {
             env: { account: "985111089818", region: "us-east-1" },
           }
         );
+        break;
       default:
         return;
     }
