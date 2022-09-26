@@ -20,18 +20,18 @@ async function main() {
   for (const environmentType of Object.keys(environments)) {
     switch (environmentType) {
       case EnvironmentType.Dev:
-        let environmentInfo = environments[environmentType];
+        const devInfo = environments[environmentType];
         new VenusDeployStack(
           app,
           `venus-${environmentType.toLowerCase()}`,
           version,
           environmentType,
-          environmentInfo,
+          devInfo,
           {
             AUTH0_DOMAIN_NAME: "fern-dev.us.auth0.com",
             AUTH0_CLIENT_ID: "8lyAgexpGrHZLhN2i1FNPSicjupACR1r",
             AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
-            CLOUDMAP_NAME: environmentInfo.cloudMapNamespaceInfo.namespaceName,
+            CLOUDMAP_NAME: devInfo.cloudMapNamespaceInfo.namespaceName,
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
@@ -39,18 +39,18 @@ async function main() {
         );
         break;
       case EnvironmentType.Prod:
-        environmentInfo = environments[environmentType];
+        const prodInfo = environments[environmentType];
         new VenusDeployStack(
           app,
           `venus-${environmentType.toLowerCase()}`,
           version,
           environmentType,
-          environmentInfo,
+          prodInfo,
           {
             AUTH0_DOMAIN_NAME: "fake",
             AUTH0_CLIENT_ID: "fake",
             AUTH0_CLIENT_SECRET: "fake",
-            CLOUDMAP_NAME: environmentInfo.cloudMapNamespaceInfo.namespaceName,
+            CLOUDMAP_NAME: prodInfo.cloudMapNamespaceInfo.namespaceName,
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
