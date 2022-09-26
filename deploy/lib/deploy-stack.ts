@@ -15,6 +15,13 @@ import { Construct } from "constructs";
 const CONTAINER_NAME = "venus";
 const SERVICE_NAME = "venus";
 
+export interface VenusEnvVariables {
+  AUTH0_DOMAIN_NAME: string,
+  AUTH0_CLIENT_ID: string,
+  AUTH0_CLIENT_SECRET: string,
+  CLOUDMAP_NAME: string,
+}
+
 export class VenusDeployStack extends Stack {
   constructor(
     scope: Construct,
@@ -22,6 +29,7 @@ export class VenusDeployStack extends Stack {
     version: string,
     environmentType: EnvironmentType,
     environmentInfo: EnvironmentInfo,
+    envVariables: VenusEnvVariables,
     props?: StackProps
   ) {
     super(scope, id, props);
@@ -78,6 +86,9 @@ export class VenusDeployStack extends Stack {
             logGroup,
             streamPrefix: SERVICE_NAME,
           }),
+          environment: {
+            ...envVariables
+          }
         },
         assignPublicIp: true,
         publicLoadBalancer: true,
