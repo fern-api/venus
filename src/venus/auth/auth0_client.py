@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timedelta
+
 from auth0.v3.authentication import GetToken
 from auth0.v3.management import Auth0
 
@@ -23,7 +26,7 @@ class Auth0Client:
     def __init__(self, config: VenusConfig):
         self.config = config
         self.mgmt_api_token: str = None
-        self.expiry: str = None
+        self.expiry_time: datetime = None
 
     def get(self) -> VenusAuth0Client:
         self._ensure_token_valid()
@@ -34,7 +37,7 @@ class Auth0Client:
         return VenusAuth0Client(auth0)
 
     def _ensure_token_valid(self):
-        if self.mgmt_api_token is None:
+        if self.mgmt_api_token is None or datetime.now() > self.expiry_time:
             get_token = GetToken(self.config.auth0_domain_name)
             token = get_token.client_credentials(
                 client_id=self.config.auth0_client_id,
@@ -42,3 +45,6 @@ class Auth0Client:
                 audience=self.config.auth0_mgmt_audience,
             )
             self.mgmt_api_token = token["access_token"]
+            self.expiry_time = datetime.now() + timedelta(
+                seconds=int(token["expires_in"]) - 1000
+            )
