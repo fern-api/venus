@@ -1,12 +1,11 @@
 from datetime import datetime
 from datetime import timedelta
+from typing import Optional
 
 from auth0.v3.authentication import GetToken
 from auth0.v3.management import Auth0
 
 from venus.config import VenusConfig
-
-from typing import Optional
 
 
 class VenusAuth0Client:
@@ -27,7 +26,7 @@ class VenusAuth0Client:
 class Auth0Client:
     def __init__(self, config: VenusConfig):
         self.config = config
-        self.mgmt_api_token: Optional[str]  = None
+        self.mgmt_api_token: Optional[str] = None
         self.expiry_time: Optional[datetime] = None
 
     def get(self) -> VenusAuth0Client:
@@ -51,7 +50,7 @@ class Auth0Client:
                 seconds=int(token["expires_in"]) - 1000
             )
 
-    def _is_expired(self) -> bool: 
-        if self.expiry_time is not None: 
+    def _is_expired(self) -> bool:
+        if self.expiry_time is not None:
             return datetime.now() > self.expiry_time
         return True
