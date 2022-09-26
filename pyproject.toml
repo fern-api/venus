@@ -16,6 +16,7 @@ uvicorn = "^0.18.3"
 pydantic = "^1.10.2"
 requests = "^2.28.1"
 auth0-python = "^3.23.1"
+dataclasses-json = "^0.5.7"
 
 [tool.poetry.scripts]
 start = "venus.main:start"
@@ -30,7 +31,7 @@ pre-commit = "^2.20.0"
 pytest-env = "^0.6.2"
 
 [tool.black]
-line-length = 80
+line-length = 79
 target-version = ['py38']
 include = '\.pyi?$'
 
