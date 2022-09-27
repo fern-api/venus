@@ -3,7 +3,6 @@ imports:
   commons: commons.yml
 
 types:
-
   GenerateRegistryTokensRequest:
     properties:
       organizationId: commons.OrganizationId
@@ -25,7 +24,7 @@ types:
   CheckRegistryPermissionRequest:
     properties:
       organizationId: commons.OrganizationId
-      token: RegistryToken
+      token: optional<RegistryToken>
 
   RegistryToken:
     union:
@@ -38,7 +37,6 @@ services:
       auth: false # TODO make true
       base-path: /registry
       endpoints:
-
         generateRegistryTokens:
           method: POST
           path: /generate-tokens
