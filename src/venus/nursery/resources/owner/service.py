@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 import requests
 
 from ..._core import Response
@@ -7,8 +9,6 @@ from .types import CreateOwnerRequest
 from .types import Owner
 from .types import OwnerId
 from .types import UpdateOwnerRequest
-
-from urllib.parse import urljoin
 
 
 class OwnerService:
