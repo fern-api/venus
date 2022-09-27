@@ -1,13 +1,12 @@
 from uuid import uuid4
+
 from fastapi.testclient import TestClient
 
+from venus.global_dependencies import get_auth0
+from venus.global_dependencies import get_nursery_client
 from venus.main import app
 
-
-from .docker_fixtures import nursery_docker
-from venus.global_dependencies import get_auth0
 from .mock_auth0_client import MockAuth0Client
-from venus.global_dependencies import get_nursery_client
 
 
 client = TestClient(app)
@@ -28,7 +27,7 @@ def test_create_and_update_org(nursery_docker):  # type: ignore
     if get_owner_response.ok:
         print("get_owner_response", get_owner_response.body)
         assert (
-            get_owner_response.body.data["artifactReadRequiresToken"] == False
+            get_owner_response.body.data["artifactReadRequiresToken"] is False
         )
     else:
         raise Exception(
@@ -46,7 +45,7 @@ def test_create_and_update_org(nursery_docker):  # type: ignore
     if get_owner_response.ok:
         print("get_owner_response", get_owner_response.body)
         assert (
-            get_owner_response.body.data["artifactReadRequiresToken"] == True
+            get_owner_response.body.data["artifactReadRequiresToken"] is True
         )
     else:
         raise Exception(

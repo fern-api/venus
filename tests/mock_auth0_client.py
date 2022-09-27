@@ -1,9 +1,8 @@
 from typing import Dict
 from uuid import uuid4
-from venus.auth.auth0_client import (
-    AbstractAuth0Client,
-    AbstractVenusAuth0Client,
-)
+
+from venus.auth.auth0_client import AbstractAuth0Client
+from venus.auth.auth0_client import AbstractVenusAuth0Client
 
 
 class MockVenusAuth0Client(AbstractVenusAuth0Client):

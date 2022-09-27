@@ -1,4 +1,5 @@
 import typing
+
 import pydantic
 
 from ..commons.organization_id import OrganizationId

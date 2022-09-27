@@ -1,3 +1,5 @@
+from abc import ABC
+from abc import abstractmethod
 from datetime import datetime
 from datetime import timedelta
 from typing import Optional
@@ -6,8 +8,6 @@ from auth0.v3.authentication import GetToken
 from auth0.v3.management import Auth0
 
 from venus.config import VenusConfig
-
-from abc import ABC, abstractmethod
 
 
 class AbstractVenusAuth0Client(ABC):

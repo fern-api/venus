@@ -10,8 +10,6 @@ from venus.nursery.resources.owner.types.create_owner_request import (
     CreateOwnerRequest,
 )
 
-from .docker_fixtures import nursery_docker
-
 
 client = TestClient(app)
 nursery_client = get_nursery_client()
