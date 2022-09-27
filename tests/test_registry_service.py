@@ -25,7 +25,7 @@ def is_responsive(url: str):  # type: ignore
         print(response)
         if response.status_code == 204:
             return True
-    except Exception as e:
+    except Exception:
         return False
 
 
