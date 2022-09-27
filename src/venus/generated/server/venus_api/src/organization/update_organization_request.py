@@ -4,7 +4,7 @@ import pydantic
 
 
 class UpdateOrganizationRequest(pydantic.BaseModel):
-    artifact_read_requires_token: typing.Optional[bool] = pydantic.Field(
+    artifact_read_requires_token: bool = pydantic.Field(
         alias="artifactReadRequiresToken"
     )
 
