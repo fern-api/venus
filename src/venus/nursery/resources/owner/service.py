@@ -23,14 +23,14 @@ class OwnerService:
             },
             data=body.json(by_alias=True),
         )
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(ok=True, body=None)
         else:
             return FailedResponse(ok=False, error=None)
 
     def get(self, *, owner_id: OwnerId) -> Response[Owner, None]:
         response = requests.get(url=urljoin(self.origin, f"owner/{owner_id}"))
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(
                 ok=True, body=Owner.parse_raw(response.text)
             )
@@ -42,9 +42,12 @@ class OwnerService:
     ) -> Response[Owner, None]:
         response = requests.put(
             url=urljoin(self.origin, f"owner/{owner_id}"),
+            headers={
+                "Content-Type": "application/json",
+            },
             data=body.json(by_alias=True),
         )
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(
                 ok=True, body=Owner.parse_raw(response.text)
             )

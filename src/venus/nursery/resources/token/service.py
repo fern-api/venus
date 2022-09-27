@@ -29,7 +29,7 @@ class TokenService:
             },
             data=body.json(by_alias=True),
         )
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(
                 ok=True, body=CreateTokenResponse.parse_raw(response.text)
             )
@@ -46,7 +46,7 @@ class TokenService:
             },
             data=body.json(by_alias=True),
         )
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(
                 ok=True, body=TokenMetadata.parse_raw(response.text)
             )
@@ -59,7 +59,7 @@ class TokenService:
         response = requests.get(
             url=urljoin(self.origin, f"tokens/owner/{owner_id}"),
         )
-        if response.status_code >= 200 or response.status_code < 300:
+        if response.status_code >= 200 and response.status_code < 300:
             return SuccessResponse(
                 ok=True, body=parse_obj_as(List[TokenMetadata], response.text)
             )

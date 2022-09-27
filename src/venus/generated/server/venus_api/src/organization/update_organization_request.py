@@ -4,8 +4,7 @@ import pydantic
 from ..commons.organization_id import OrganizationId
 
 
-class CreateOrganizationRequest(pydantic.BaseModel):
-    organization_id: OrganizationId = pydantic.Field(alias="organizationId")
+class UpdateOrganizationRequest(pydantic.BaseModel):
     artifact_read_requires_token: typing.Optional[bool] = pydantic.Field(
         alias="artifactReadRequiresToken"
     )

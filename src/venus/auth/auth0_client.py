@@ -7,8 +7,16 @@ from auth0.v3.management import Auth0
 
 from venus.config import VenusConfig
 
+from abc import ABC, abstractmethod
 
-class VenusAuth0Client:
+
+class AbstractVenusAuth0Client(ABC):
+    @abstractmethod
+    def create_organization(self, org_id: str) -> str:
+        raise NotImplementedError
+
+
+class VenusAuth0Client(AbstractVenusAuth0Client):
     def __init__(self, auth0: Auth0):
         self.auth0 = auth0
 
@@ -23,7 +31,13 @@ class VenusAuth0Client:
         return create_auth0_organization_response["id"]
 
 
-class Auth0Client:
+class AbstractAuth0Client(ABC):
+    @abstractmethod
+    def get(self) -> AbstractVenusAuth0Client:
+        raise NotImplementedError
+
+
+class Auth0Client(AbstractAuth0Client):
     def __init__(self, config: VenusConfig):
         self.config = config
         self.mgmt_api_token: Optional[str] = None

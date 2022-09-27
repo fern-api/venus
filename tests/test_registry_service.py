@@ -2,41 +2,19 @@ import json
 
 from uuid import uuid4
 
-import pytest
-import requests
-
 from fastapi.testclient import TestClient
 
-from venus.global_dependencies import config
 from venus.global_dependencies import get_nursery_client
 from venus.main import app
 from venus.nursery.resources.owner.types.create_owner_request import (
     CreateOwnerRequest,
 )
 
+from .docker_fixtures import nursery_docker
+
 
 client = TestClient(app)
 nursery_client = get_nursery_client()
-
-
-def is_responsive(url: str):  # type: ignore
-    try:
-        response = requests.get(url)
-        print(response)
-        if response.status_code == 204:
-            return True
-    except Exception:
-        return False
-
-
-@pytest.fixture(scope="session")
-def nursery_docker(docker_ip, docker_services):  # type: ignore
-    print(config.nursery_origin + "/health")
-    docker_services.wait_until_responsive(
-        timeout=30.0,
-        pause=1,
-        check=lambda: is_responsive(config.nursery_origin + "/health"),
-    )
 
 
 def test_generate_and_use_token(nursery_docker) -> None:  # type: ignore
