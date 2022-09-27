@@ -29,16 +29,13 @@ jobs:
   test:
     machine:
       image: ubuntu-2004:current
-    environment:
-      PATH: "/home/circleci/.local/bin:$PATH"
     steps:
       - checkout
       - run: curl -sSL https://install.python-poetry.org | python3 -
-      - python/install-packages:
-          pkg-manager: poetry
+      - run: /home/circleci/.local/bin/poetry install --no-ansi
       - run:
           name: test
-          command: poetry run pytest -sv
+          command: /home/circleci/.local/bin/poetry run pytest -sv
 
   deploy-dev:
     machine:
