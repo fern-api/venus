@@ -24,6 +24,9 @@ class TokenService:
     ) -> Response[CreateTokenResponse, None]:
         response = requests.post(
             url=urljoin(self.origin, "tokens/create"),
+            headers={
+                "Content-Type": "application/json",
+            },
             data=body.json(by_alias=True),
         )
         if response.status_code >= 200 or response.status_code < 300:
@@ -38,6 +41,9 @@ class TokenService:
     ) -> Response[TokenMetadata, None]:
         response = requests.post(
             url=urljoin(self.origin, "tokens/metadata"),
+            headers={
+                "Content-Type": "application/json",
+            },
             data=body.json(by_alias=True),
         )
         if response.status_code >= 200 or response.status_code < 300:
@@ -51,7 +57,7 @@ class TokenService:
         self, *, owner_id: OwnerId
     ) -> Response[List[TokenMetadata], None]:
         response = requests.get(
-            url=urljoin(self.origin, f"/tokens/owner/{owner_id}"),
+            url=urljoin(self.origin, f"tokens/owner/{owner_id}"),
         )
         if response.status_code >= 200 or response.status_code < 300:
             return SuccessResponse(

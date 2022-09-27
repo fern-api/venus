@@ -9,7 +9,7 @@ AUTH0_DOMAIN_NAME_ENV_VAR = "AUTH0_DOMAIN_NAME"
 AUTH0_CLIENT_ID_ENV_VAR = "AUTH0_CLIENT_ID"
 AUTH0_CLIENT_SECRET_ENV_VAR = "AUTH0_CLIENT_SECRET"
 AUTH0_MGMT_AUDIENCE_ENV_VAR = "AUTH0_MGMT_AUDIENCE"
-CLOUDMAP_NAME_ENV_VAR = "CLOUDMAP_NAME"
+NURSERY_ORIGIN_ENV_VAR = "NURSERY_ORIGIN"
 
 
 @dataclass
@@ -18,7 +18,7 @@ class VenusConfig:
     auth0_client_id: str
     auth0_client_secret: str
     auth0_mgmt_audience: str
-    cloudmap_name: str
+    nursery_origin: str
 
     @staticmethod
     def __get_env_var_or_throw(env_var: str) -> str:
@@ -42,7 +42,7 @@ class VenusConfig:
             auth0_mgmt_audience=VenusConfig.__get_env_var_or_throw(
                 AUTH0_MGMT_AUDIENCE_ENV_VAR
             ),
-            cloudmap_name=VenusConfig.__get_env_var_or_throw(
-                CLOUDMAP_NAME_ENV_VAR
+            nursery_origin=VenusConfig.__get_env_var_or_throw(
+                NURSERY_ORIGIN_ENV_VAR
             ),
         )

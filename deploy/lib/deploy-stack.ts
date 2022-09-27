@@ -16,11 +16,11 @@ const CONTAINER_NAME = "venus";
 const SERVICE_NAME = "venus";
 
 export interface VenusEnvVariables {
-  AUTH0_DOMAIN_NAME: string,
-  AUTH0_CLIENT_ID: string,
-  AUTH0_CLIENT_SECRET: string,
-  CLOUDMAP_NAME: string,
-  AUTH0_MGMT_AUDIENCE: string,
+  AUTH0_DOMAIN_NAME: string;
+  AUTH0_CLIENT_ID: string;
+  AUTH0_CLIENT_SECRET: string;
+  NURSERY_ORIGIN: string;
+  AUTH0_MGMT_AUDIENCE: string;
 }
 
 export class VenusDeployStack extends Stack {
@@ -88,8 +88,8 @@ export class VenusDeployStack extends Stack {
             streamPrefix: SERVICE_NAME,
           }),
           environment: {
-            ...envVariables
-          }
+            ...envVariables,
+          },
         },
         assignPublicIp: true,
         publicLoadBalancer: true,

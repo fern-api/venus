@@ -15,6 +15,4 @@ def get_auth0() -> Auth0Client:
 
 @functools.lru_cache()
 def get_nursery_client() -> NurseryApiClient:
-    return NurseryApiClient(
-        origin=f"http://nursery.{config.cloudmap_name}:8080"
-    )
+    return NurseryApiClient(origin=config.nursery_origin)
