@@ -8,8 +8,7 @@ from venus.auth.auth0_client import Auth0Client
 from venus.global_dependencies import get_auth0
 from venus.global_dependencies import get_nursery_client
 from venus.nursery.client import NurseryApiClient
-from venus.nursery.resources.owner.types.create_owner_request import \
-    CreateOwnerRequest
+from venus.nursery.resources import CreateOwnerRequest
 from venus.nursery_owner_data import NurseryOrgData
 
 
