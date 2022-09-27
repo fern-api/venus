@@ -29,6 +29,8 @@ jobs:
   test:
     machine:
       image: ubuntu-2004:current
+    env:
+      PATH: "/home/circleci/.local/bin:$PATH"
     steps:
       - checkout
       - run: curl -sSL https://install.python-poetry.org | python3 -
