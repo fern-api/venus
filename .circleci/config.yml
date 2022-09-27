@@ -29,7 +29,7 @@ jobs:
   test:
     machine:
       image: ubuntu-2004:current
-    env:
+    environment:
       PATH: "/home/circleci/.local/bin:$PATH"
     steps:
       - checkout
