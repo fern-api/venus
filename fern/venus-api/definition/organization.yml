@@ -6,6 +6,13 @@ types:
   CreateOrganizationRequest:
     properties:
       organizationId: commons.OrganizationId
+      artifactReadRequiresToken:
+        type: optional<boolean>
+        docs: Defaults to False
+
+  UpdateOrganizationRequest:
+    properties:
+      artifactReadRequiresToken: boolean
 
   UserReference:
     union:
@@ -18,7 +25,6 @@ services:
       auth: false # TODO make true
       base-path: /organizations
       endpoints:
-
         create:
           method: POST
           path: /create
@@ -26,6 +32,15 @@ services:
           errors:
             - commons.UnauthorizedError
             - OrganizationAlreadyExistsError
+
+        update:
+          method: POST
+          path: /{orgId}/update
+          path-parameters:
+            orgId: commons.OrganizationId
+          request: UpdateOrganizationRequest
+          errors:
+            - commons.UnauthorizedError
 
         # addMember:
         #   method: POST

@@ -12,6 +12,7 @@ from venus.nursery.resources.token.types.create_token_request import (
 from venus.nursery.resources.token.types.get_token_metadata_request import (
     GetTokenMetadataRequest,
 )
+from venus.nursery_owner_data import read_nursery_org_data
 
 
 router = APIRouter()
@@ -50,13 +51,24 @@ class RegistryService:
         request: fern.CheckRegistryPermissionRequest,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> bool:
-        token = request.token.visit(
-            lambda npm: npm.token, lambda maven: maven.password
+        get_owner_response = nursery_client.owner.get(
+            owner_id=request.organization_id
         )
-        token_metadata_response = nursery_client.token.get_token_metadata(
-            body=GetTokenMetadataRequest(token=token)
-        )
-        if token_metadata_response.ok:
+        if not get_owner_response.ok:
+            raise Exception("Failed to load organization")
+        nursery_org_data = read_nursery_org_data(get_owner_response.body.data)
+        if not nursery_org_data.artifact_read_requires_token:
             return True
+        elif request.token is None:
+            raise Exception("Token is required to auth")
         else:
-            return False
+            token = request.token.visit(
+                lambda npm: npm.token, lambda maven: maven.password
+            )
+            token_metadata_response = nursery_client.token.get_token_metadata(
+                body=GetTokenMetadataRequest(token=token)
+            )
+            if token_metadata_response.ok:
+                return True
+            else:
+                return False
