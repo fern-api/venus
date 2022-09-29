@@ -48,11 +48,11 @@ async function main() {
           environmentType,
           prodInfo,
           {
-            AUTH0_DOMAIN_NAME: "fake",
-            AUTH0_CLIENT_ID: "fake",
-            AUTH0_CLIENT_SECRET: "fake",
+            AUTH0_DOMAIN_NAME: "fern-prod.us.auth0.com",
+            AUTH0_CLIENT_ID: "gRM6LcuNPpl1ntHwOgdVYWWcjaUVrfgG",
+            AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
+            AUTH0_MGMT_AUDIENCE: "https://fern-prod.us.auth0.com/api/v2/",
             NURSERY_ORIGIN: `http://nursery.${prodInfo.cloudMapNamespaceInfo.namespaceName}:8080`,
-            AUTH0_MGMT_AUDIENCE: "fake",
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
