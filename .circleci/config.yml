@@ -65,6 +65,21 @@ jobs:
             cd deploy
             npm install
             VERSION="${git_version}" npm run cdk deploy venus-dev --require-approval never --progress events
+  
+  deploy-prod:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: cdk deploy
+          command: |
+            git_version="$(scripts/git-version.sh)"
+            ./create_docker.sh "${git_version}"
+            cd deploy
+            npm install
+            VERSION="${git_version}" npm run cdk deploy venus-prod --require-approval never --progress events
 
 workflows:
   version: 2
@@ -92,6 +107,22 @@ workflows:
             - github
             - fern-dev
             - venus-dev
+          requires:
+            - check
+            - test
+      
+      - deploy-prod:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /.*/
+          context:
+            - aws
+            - github
+            - fern-prod
+            - venus-prod
           requires:
             - check
             - test
