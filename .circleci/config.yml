@@ -36,6 +36,20 @@ jobs:
       - run:
           name: test
           command: /home/circleci/.local/bin/poetry run pytest -sv
+  
+  publish-docker: 
+    machine: 
+      image: ubuntu-2004:current
+    steps: 
+      - checkout
+      - run: 
+          name: Publish docker
+          command: | 
+            git_version="$(scripts/git-version.sh)"
+            ./create_docker.sh "${git_version}"
+            echo "$FERNAPI_DOCKER_HUB_PASSWORD" | docker login --username fernapi --password-stdin
+            docker tag venus:"${git_version}" fernapi/venus:"${git_version}"
+            docker push fernapi/venus:"${git_version}"
 
   deploy-dev:
     machine:
@@ -81,3 +95,13 @@ workflows:
           requires:
             - check
             - test
+    
+      - publish-docker: 
+          filters:
+            branches:
+              only: main
+            tags:
+              only:
+                - /.*/
+          context:
+            - docker-hub
