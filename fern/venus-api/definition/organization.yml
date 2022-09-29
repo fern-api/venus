@@ -10,6 +10,11 @@ types:
         type: optional<boolean>
         docs: Defaults to False
 
+  Organization:
+    properties:
+      organizationId: commons.OrganizationId
+      artifactReadRequiresToken: boolean
+
   UpdateOrganizationRequest:
     properties:
       artifactReadRequiresToken: boolean
@@ -39,6 +44,15 @@ services:
           path-parameters:
             orgId: commons.OrganizationId
           request: UpdateOrganizationRequest
+          errors:
+            - commons.UnauthorizedError
+
+        get:
+          method: GET
+          path: /{orgId}
+          path-parameters:
+            orgId: commons.OrganizationId
+          response: Organization
           errors:
             - commons.UnauthorizedError
 

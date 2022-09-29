@@ -64,3 +64,21 @@ class OrganizationsService:
                 "Encountered error while updating org",
                 owner_update_response.error,
             )
+
+    @router.get("/organizations/{org_id}", response_model=fern.Organization)
+    def get(
+        self,
+        org_id: fern_commons.OrganizationId,
+        nursery_client: NurseryApiClient = Depends(get_nursery_client),
+    ) -> fern.Organization:
+        get_owner_response = nursery_client.owner.get(owner_id=org_id)
+        if not get_owner_response.ok:
+            raise Exception(
+                "Encountered error while retrieving org",
+                get_owner_response.error,
+            )
+        org_data = read_nursery_org_data(get_owner_response.body.data)
+        return fern.Organization(
+            organization_id=org_id,
+            artifact_read_requires_token=org_data.artifact_read_requires_token,
+        )

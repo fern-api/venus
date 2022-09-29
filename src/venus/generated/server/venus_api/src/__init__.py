@@ -1,6 +1,7 @@
 from .commons import OrganizationId
 from .commons import UserId
 from .organization import CreateOrganizationRequest
+from .organization import Organization
 from .organization import UserReference
 from .registry import CheckRegistryPermissionRequest
 from .registry import GenerateRegistryTokensRequest
@@ -18,6 +19,7 @@ __all__ = [
     "GenerateRegistryTokensRequest",
     "MavenRegistryToken",
     "NpmRegistryToken",
+    "Organization",
     "OrganizationId",
     "OrganizationsPage",
     "RegistryToken",
@@ -25,4 +27,5 @@ __all__ = [
     "User",
     "UserId",
     "UserReference",
+    "Organization",
 ]
