@@ -48,8 +48,8 @@ jobs:
             git_version="$(scripts/git-version.sh)"
             ./create_docker.sh "${git_version}"
             echo "$FERNAPI_DOCKER_HUB_PASSWORD" | docker login --username fernapi --password-stdin
-            docker tag venus:"$projectVersion" fernapi/venus:"$projectVersion"
-            docker push fernapi/venus:"$projectVersion"
+            docker tag venus:"${git_version}" fernapi/venus:"${git_version}"
+            docker push fernapi/venus:"${git_version}"
 
   deploy-dev:
     machine:
