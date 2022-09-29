@@ -3,7 +3,6 @@ from fastapi import Depends
 from fastapi_utils.cbv import cbv
 
 import venus.generated.server.venus_api.src.commons as fern_commons
-from venus.generated.server.venus_api.src.commons import organization_id
 import venus.generated.server.venus_api.src.organization as fern
 
 from venus.auth.auth0_client import Auth0Client

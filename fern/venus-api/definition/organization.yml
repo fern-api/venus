@@ -9,9 +9,9 @@ types:
       artifactReadRequiresToken:
         type: optional<boolean>
         docs: Defaults to False
-  
-  Organization: 
-    properties: 
+
+  Organization:
+    properties:
       organizationId: commons.OrganizationId
       artifactReadRequiresToken: boolean
 
@@ -46,7 +46,7 @@ services:
           request: UpdateOrganizationRequest
           errors:
             - commons.UnauthorizedError
-        
+
         get:
           method: GET
           path: /{orgId}
