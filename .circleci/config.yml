@@ -122,7 +122,7 @@ workflows:
             - aws
             - github
             - fern-prod
-            - venus-dev
+            - venus-prod
           requires:
             - check
             - test
