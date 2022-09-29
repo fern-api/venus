@@ -10,6 +10,7 @@ from .registry import RegistryToken
 from .registry import RegistryTokens
 from .user import OrganizationsPage
 from .user import User
+from .organization import Organization
 
 
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "GenerateRegistryTokensRequest",
     "MavenRegistryToken",
     "NpmRegistryToken",
+    "Organization",
     "OrganizationId",
     "OrganizationsPage",
     "RegistryToken",
@@ -25,4 +27,5 @@ __all__ = [
     "User",
     "UserId",
     "UserReference",
+    "Organization",
 ]
