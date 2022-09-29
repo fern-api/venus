@@ -90,7 +90,7 @@ export class VenusDeployStack extends Stack {
         cpu: 256,
         memoryLimitMiB: 512,
         desiredCount: 1,
-        securityGroups: [],
+        securityGroups: [venusSg],
         taskImageOptions: {
           image: ContainerImage.fromTarball(`../venus:${version}.tar`),
           containerName: CONTAINER_NAME,
