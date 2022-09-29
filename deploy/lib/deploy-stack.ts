@@ -10,6 +10,7 @@ import { ApplicationLoadBalancedFargateService } from "aws-cdk-lib/aws-ecs-patte
 import { ApplicationProtocol } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { PrivateDnsNamespace } from "aws-cdk-lib/aws-servicediscovery";
 import { Construct } from "constructs";
 
 const CONTAINER_NAME = "venus";
@@ -49,12 +50,24 @@ export class VenusDeployStack extends Stack {
       Port.tcp(443),
       "allow HTTPS traffic from anywhere"
     );
+    venusSg.addIngressRule(Peer.ipv4("172.31.0.0/16"), Port.allTcp());
 
     const cluster = Cluster.fromClusterAttributes(this, "cluster", {
       clusterName: environmentInfo.ecsInfo.clusterName,
       vpc,
       securityGroups: [],
     });
+
+    const cloudMapNamespace =
+      PrivateDnsNamespace.fromPrivateDnsNamespaceAttributes(
+        this,
+        "private-cloudmap",
+        {
+          namespaceArn: environmentInfo.cloudMapNamespaceInfo.namespaceArn,
+          namespaceId: environmentInfo.cloudMapNamespaceInfo.namespaceId,
+          namespaceName: environmentInfo.cloudMapNamespaceInfo.namespaceName,
+        }
+      );
 
     const logGroup = LogGroup.fromLogGroupName(
       this,
@@ -101,6 +114,13 @@ export class VenusDeployStack extends Stack {
           zoneName: environmentInfo.route53Info.hostedZoneName,
         }),
         domainName: getServiceDomainName(environmentType, environmentInfo),
+        cloudMapOptions:
+          cloudMapNamespace != null
+            ? {
+                cloudMapNamespace,
+                name: SERVICE_NAME,
+              }
+            : undefined,
       }
     );
 
