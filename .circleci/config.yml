@@ -97,10 +97,11 @@ workflows:
             - test
     
       - publish-docker: 
-          filters: 
+          filters:
+            branches:
+              only: main
             tags:
-              only: /.*/
-            # branches: 
-            #   only: main
+              only:
+                - /.*/
           context:
             - docker-hub
