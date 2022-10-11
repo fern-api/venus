@@ -21,8 +21,12 @@ types:
 
   UserReference:
     union:
-      userId: commons.UserId
-      emailAddress: string
+      userId:
+        type: commons.UserId
+        key: userId
+      emailAddress:
+        type: string
+        key: emailAddress
 
 services:
   http:

@@ -1,21 +1,21 @@
-from .resources import (
+from .commons import OrganizationId, UserId
+from .organization import (
     AbstractOrganizationService,
+    CreateOrganizationRequest,
+    Organization,
+    UpdateOrganizationRequest,
+    UserReference,
+)
+from .registry import (
     AbstractRegistryService,
     CheckRegistryPermissionRequest,
-    CreateOrganizationRequest,
     GenerateRegistryTokensRequest,
     MavenRegistryToken,
     NpmRegistryToken,
-    Organization,
-    OrganizationId,
-    OrganizationsPage,
     RegistryToken,
     RegistryTokens,
-    UpdateOrganizationRequest,
-    User,
-    UserId,
-    UserReference,
 )
+from .user import OrganizationsPage, User
 
 __all__ = [
     "AbstractOrganizationService",
