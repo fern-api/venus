@@ -39,9 +39,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         request: fern.UpdateOrganizationRequest,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
-        get_owner_response = nursery_client.owner.get(
-            owner_id=org_id
-        )
+        get_owner_response = nursery_client.owner.get(owner_id=org_id)
         if not get_owner_response.ok:
             raise Exception(
                 "Encountered error while retrieving org",
@@ -66,9 +64,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         org_id: str,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> fern.Organization:
-        get_owner_response = nursery_client.owner.get(
-            owner_id=org_id
-        )
+        get_owner_response = nursery_client.owner.get(owner_id=org_id)
         if not get_owner_response.ok:
             raise Exception(
                 "Encountered error while retrieving org",
