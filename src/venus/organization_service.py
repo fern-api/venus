@@ -18,17 +18,17 @@ from venus.nursery_owner_data import read_nursery_org_data
 class OrganizationsService(fern.AbstractOrganizationService):
     def create(
         self,
-        request: fern.CreateOrganizationRequest,
+        body: fern.CreateOrganizationRequest,
         auth0_client: Auth0Client = Depends(get_auth0),
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
         auth0_org_id = auth0_client.get().create_organization(
-            org_id=request.organization_id.get_as_str()
+            org_id=body.organization_id.get_as_str()
         )
         nursery_org_data = NurseryOrgData(auth0_id=auth0_org_id)
         nursery_client.owner.create(
             body=CreateOwnerRequest(
-                owner_id=request.organization_id.get_as_str(),
+                owner_id=body.organization_id.get_as_str(),
                 data=nursery_org_data,
             )
         )
@@ -36,7 +36,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
     def update(
         self,
         org_id: str,
-        request: fern.UpdateOrganizationRequest,
+        body: fern.UpdateOrganizationRequest,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
         get_owner_response = nursery_client.owner.get(owner_id=org_id)
@@ -47,7 +47,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
             )
         org_data = read_nursery_org_data(get_owner_response.body.data)
         org_data.artifact_read_requires_token = (
-            request.artifact_read_requires_token
+            body.artifact_read_requires_token
         )
         owner_update_response = nursery_client.owner.update(
             owner_id=org_id,
