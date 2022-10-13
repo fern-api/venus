@@ -5,13 +5,17 @@
 # isort: skip_file
 
 import abc
+import functools
 import inspect
 import typing
 
 import fastapi
 
 from ...core.abstract_fern_service import AbstractFernService
+from ...core.exceptions import FernHTTPException
 from ...core.route_args import get_route_args
+from ..commons.errors.unauthorized_error import UnauthorizedError
+from .errors.organization_not_found_error import OrganizationNotFoundError
 from .types.check_registry_permission_request import CheckRegistryPermissionRequest
 from .types.generate_registry_tokens_request import GenerateRegistryTokensRequest
 from .types.registry_tokens import RegistryTokens
@@ -58,11 +62,25 @@ class AbstractRegistryService(AbstractFernService):
                 new_parameters.append(parameter)
         setattr(cls.generate_registry_tokens, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
-        cls.generate_registry_tokens = router.post(  # type: ignore
+        @functools.wraps(cls.generate_registry_tokens)
+        def wrapper(*args, **kwargs: typing.Any) -> RegistryTokens:
+            try:
+                return cls.generate_registry_tokens(*args, **kwargs)
+            except (UnauthorizedError, OrganizationNotFoundError) as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(__name__).warn(
+                    f"generate_registry_tokens unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "generate_registry_tokens's errors list in your Fern Definition."
+                )
+                raise e
+
+        router.post(  # type: ignore
             path="/registry/generate-tokens",
             response_model=RegistryTokens,
             **get_route_args(cls.generate_registry_tokens),
-        )(cls.generate_registry_tokens)
+        )(wrapper)
 
     @classmethod
     def __init_has_registry_permission(cls, router: fastapi.APIRouter) -> None:
@@ -77,6 +95,20 @@ class AbstractRegistryService(AbstractFernService):
                 new_parameters.append(parameter)
         setattr(cls.has_registry_permission, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
-        cls.has_registry_permission = router.post(  # type: ignore
+        @functools.wraps(cls.has_registry_permission)
+        def wrapper(*args, **kwargs: typing.Any) -> bool:
+            try:
+                return cls.has_registry_permission(*args, **kwargs)
+            except (UnauthorizedError, OrganizationNotFoundError) as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(__name__).warn(
+                    f"has_registry_permission unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "has_registry_permission's errors list in your Fern Definition."
+                )
+                raise e
+
+        router.post(  # type: ignore
             path="/registry/check-permissions", response_model=bool, **get_route_args(cls.has_registry_permission)
-        )(cls.has_registry_permission)
+        )(wrapper)

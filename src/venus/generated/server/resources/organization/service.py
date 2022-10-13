@@ -5,13 +5,17 @@
 # isort: skip_file
 
 import abc
+import functools
 import inspect
 import typing
 
 import fastapi
 
 from ...core.abstract_fern_service import AbstractFernService
+from ...core.exceptions import FernHTTPException
 from ...core.route_args import get_route_args
+from ..commons.errors.unauthorized_error import UnauthorizedError
+from .errors.organization_already_exists_error import OrganizationAlreadyExistsError
 from .types.create_organization_request import CreateOrganizationRequest
 from .types.organization import Organization
 from .types.update_organization_request import UpdateOrganizationRequest
@@ -63,7 +67,21 @@ class AbstractOrganizationService(AbstractFernService):
                 new_parameters.append(parameter)
         setattr(cls.create, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
-        cls.create = router.post(path="/organizations/create", **get_route_args(cls.create))(cls.create)  # type: ignore
+        @functools.wraps(cls.create)
+        def wrapper(*args, **kwargs: typing.Any) -> None:
+            try:
+                return cls.create(*args, **kwargs)
+            except (UnauthorizedError, OrganizationAlreadyExistsError) as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(__name__).warn(
+                    f"create unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "create's errors list in your Fern Definition."
+                )
+                raise e
+
+        router.post(path="/organizations/create", **get_route_args(cls.create))(wrapper)  # type: ignore
 
     @classmethod
     def __init_update(cls, router: fastapi.APIRouter) -> None:
@@ -80,9 +98,21 @@ class AbstractOrganizationService(AbstractFernService):
                 new_parameters.append(parameter)
         setattr(cls.update, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
-        cls.update = router.post(path="/organizations/{org_id}/update", **get_route_args(cls.update))(  # type: ignore
-            cls.update
-        )
+        @functools.wraps(cls.update)
+        def wrapper(*args, **kwargs: typing.Any) -> None:
+            try:
+                return cls.update(*args, **kwargs)
+            except UnauthorizedError as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(__name__).warn(
+                    f"update unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "update's errors list in your Fern Definition."
+                )
+                raise e
+
+        router.post(path="/organizations/{org_id}/update", **get_route_args(cls.update))(wrapper)  # type: ignore
 
     @classmethod
     def __init_get(cls, router: fastapi.APIRouter) -> None:
@@ -97,6 +127,20 @@ class AbstractOrganizationService(AbstractFernService):
                 new_parameters.append(parameter)
         setattr(cls.get, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
-        cls.get = router.get(  # type: ignore
+        @functools.wraps(cls.get)
+        def wrapper(*args, **kwargs: typing.Any) -> Organization:
+            try:
+                return cls.get(*args, **kwargs)
+            except UnauthorizedError as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(__name__).warn(
+                    f"get unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "get's errors list in your Fern Definition."
+                )
+                raise e
+
+        router.get(  # type: ignore
             path="/organizations/{org_id}", response_model=Organization, **get_route_args(cls.get)
-        )(cls.get)
+        )(wrapper)

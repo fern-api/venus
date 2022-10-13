@@ -4,10 +4,21 @@
 # fmt: off
 # isort: skip_file
 
+import glob
+import importlib
+import os
+import types
+
 import fastapi
+import starlette
 
 from .core.abstract_fern_service import AbstractFernService
-from .core.exceptions import FernHTTPException
+from .core.exceptions import (
+    FernHTTPException,
+    default_exception_handler,
+    fern_http_exception_handler,
+    http_exception_handler,
+)
 from .resources.organization.service import AbstractOrganizationService
 from .resources.registry.service import AbstractRegistryService
 
@@ -18,12 +29,21 @@ def register(
     app.include_router(__register_service(organization))
     app.include_router(__register_service(registry))
 
-    @app.exception_handler(FernHTTPException)
-    def _exception_handler(request: fastapi.requests.Request, exc: FernHTTPException) -> fastapi.responses.JSONResponse:
-        return exc.to_json_response()
+    app.add_exception_handler(FernHTTPException, fern_http_exception_handler)
+    app.add_exception_handler(starlette.exceptions.HTTPException, http_exception_handler)
+    app.add_exception_handler(Exception, default_exception_handler)
 
 
 def __register_service(service: AbstractFernService) -> fastapi.APIRouter:
     router = fastapi.APIRouter()
     type(service)._init_fern(router)
     return router
+
+
+def register_validators(module: types.ModuleType) -> None:
+    validators_directory = os.path.dirname(module.__file__)
+    for path in glob.glob("**/*.py", root_dir=validators_directory, recursive=True):
+        absolute_path = os.path.join(validators_directory, path)
+        if os.path.isfile(absolute_path):
+            module_path = ".".join([module.__name__] + path.removesuffix(".py").split("/"))
+            importlib.import_module(module_path)

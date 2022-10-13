@@ -20,9 +20,7 @@ class RegistryService(fern.AbstractRegistryService):
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> fern.RegistryTokens:
         create_token_response = nursery_client.token.create(
-            body=CreateTokenRequest(
-                owner_id=body.organization_id.get_as_str()
-            )
+            body=CreateTokenRequest(owner_id=body.organization_id.get_as_str())
         )
         if create_token_response.ok:
             return fern.RegistryTokens(

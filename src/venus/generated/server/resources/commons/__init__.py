@@ -4,6 +4,7 @@
 # fmt: off
 # isort: skip_file
 
+from .errors import UnauthorizedError, UserIdDoesNotExistError
 from .types import OrganizationId, UserId
 
-__all__ = ["OrganizationId", "UserId"]
+__all__ = ["OrganizationId", "UnauthorizedError", "UserId", "UserIdDoesNotExistError"]

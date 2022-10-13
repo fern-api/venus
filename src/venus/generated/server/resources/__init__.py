@@ -4,11 +4,12 @@
 # fmt: off
 # isort: skip_file
 
-from .commons import OrganizationId, UserId
+from .commons import OrganizationId, UnauthorizedError, UserId, UserIdDoesNotExistError
 from .organization import (
     AbstractOrganizationService,
     CreateOrganizationRequest,
     Organization,
+    OrganizationAlreadyExistsError,
     UpdateOrganizationRequest,
     UserReference,
 )
@@ -18,10 +19,11 @@ from .registry import (
     GenerateRegistryTokensRequest,
     MavenRegistryToken,
     NpmRegistryToken,
+    OrganizationNotFoundError,
     RegistryToken,
     RegistryTokens,
 )
-from .user import OrganizationsPage, User
+from .user import OrganizationsPage, User, UserAleadyExistsError
 
 __all__ = [
     "AbstractOrganizationService",
@@ -32,12 +34,17 @@ __all__ = [
     "MavenRegistryToken",
     "NpmRegistryToken",
     "Organization",
+    "OrganizationAlreadyExistsError",
     "OrganizationId",
+    "OrganizationNotFoundError",
     "OrganizationsPage",
     "RegistryToken",
     "RegistryTokens",
+    "UnauthorizedError",
     "UpdateOrganizationRequest",
     "User",
+    "UserAleadyExistsError",
     "UserId",
+    "UserIdDoesNotExistError",
     "UserReference",
 ]

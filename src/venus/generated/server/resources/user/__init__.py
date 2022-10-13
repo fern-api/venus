@@ -4,6 +4,7 @@
 # fmt: off
 # isort: skip_file
 
+from .errors import UserAleadyExistsError
 from .types import OrganizationsPage, User
 
-__all__ = ["OrganizationsPage", "User"]
+__all__ = ["OrganizationsPage", "User", "UserAleadyExistsError"]

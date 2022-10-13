@@ -4,6 +4,7 @@
 # fmt: off
 # isort: skip_file
 
+from .errors import OrganizationNotFoundError
 from .service import AbstractRegistryService
 from .types import (
     CheckRegistryPermissionRequest,
@@ -20,6 +21,7 @@ __all__ = [
     "GenerateRegistryTokensRequest",
     "MavenRegistryToken",
     "NpmRegistryToken",
+    "OrganizationNotFoundError",
     "RegistryToken",
     "RegistryTokens",
 ]

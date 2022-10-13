@@ -4,6 +4,7 @@
 # fmt: off
 # isort: skip_file
 
+from .errors import OrganizationAlreadyExistsError
 from .service import AbstractOrganizationService
 from .types import CreateOrganizationRequest, Organization, UpdateOrganizationRequest, UserReference
 
@@ -11,6 +12,7 @@ __all__ = [
     "AbstractOrganizationService",
     "CreateOrganizationRequest",
     "Organization",
+    "OrganizationAlreadyExistsError",
     "UpdateOrganizationRequest",
     "UserReference",
 ]
