@@ -21,8 +21,12 @@ types:
 
   UserReference:
     union:
-      userId: commons.UserId
-      emailAddress: string
+      userId:
+        type: commons.UserId
+        key: userId
+      emailAddress:
+        type: string
+        key: emailAddress
 
 services:
   http:
@@ -55,7 +59,6 @@ services:
           response: Organization
           errors:
             - commons.UnauthorizedError
-
         # addMember:
         #   method: POST
         #   path: /add-members
@@ -66,5 +69,4 @@ services:
 
 errors:
   OrganizationAlreadyExistsError:
-    http:
-      statusCode: 409
+    status-code: 409

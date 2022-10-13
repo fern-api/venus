@@ -1,5 +1,6 @@
 draft:
-  - name: fernapi/fern-pydantic-model
-    version: c29059f
-    local-output: ../../app/generated/server
+  - name: fernapi/fern-fastapi-server
+    version: 0.0.13-26-g8ad7925
+    mode: download-files
+    output-path: ../../src/venus/generated/server
 release: []

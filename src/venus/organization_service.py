@@ -1,9 +1,7 @@
-from fastapi import APIRouter
 from fastapi import Depends
-from fastapi_utils.cbv import cbv
 
-import venus.generated.server.venus_api.src.commons as fern_commons
-import venus.generated.server.venus_api.src.organization as fern
+import venus.generated.server.resources.commons as fern_commons
+import venus.generated.server.resources.organization as fern
 
 from venus.auth.auth0_client import Auth0Client
 from venus.global_dependencies import get_auth0
@@ -17,33 +15,28 @@ from venus.nursery_owner_data import NurseryOrgData
 from venus.nursery_owner_data import read_nursery_org_data
 
 
-router = APIRouter()
-
-
-@cbv(router)
-class OrganizationsService:
-    @router.post("/organizations/create")
+class OrganizationsService(fern.AbstractOrganizationService):
     def create(
         self,
-        request: fern.CreateOrganizationRequest,
+        body: fern.CreateOrganizationRequest,
         auth0_client: Auth0Client = Depends(get_auth0),
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
         auth0_org_id = auth0_client.get().create_organization(
-            org_id=request.organization_id
+            org_id=body.organization_id.get_as_str()
         )
         nursery_org_data = NurseryOrgData(auth0_id=auth0_org_id)
         nursery_client.owner.create(
             body=CreateOwnerRequest(
-                owner_id=request.organization_id, data=nursery_org_data
+                owner_id=body.organization_id.get_as_str(),
+                data=nursery_org_data,
             )
         )
 
-    @router.post("/organizations/{org_id}/update")
     def update(
         self,
-        org_id: fern_commons.OrganizationId,
-        request: fern.UpdateOrganizationRequest,
+        org_id: str,
+        body: fern.UpdateOrganizationRequest,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
         get_owner_response = nursery_client.owner.get(owner_id=org_id)
@@ -54,10 +47,11 @@ class OrganizationsService:
             )
         org_data = read_nursery_org_data(get_owner_response.body.data)
         org_data.artifact_read_requires_token = (
-            request.artifact_read_requires_token
+            body.artifact_read_requires_token
         )
         owner_update_response = nursery_client.owner.update(
-            owner_id=org_id, body=UpdateOwnerRequest(data=org_data)
+            owner_id=org_id,
+            body=UpdateOwnerRequest(data=org_data),
         )
         if not owner_update_response.ok:
             raise Exception(
@@ -65,10 +59,9 @@ class OrganizationsService:
                 owner_update_response.error,
             )
 
-    @router.get("/organizations/{org_id}", response_model=fern.Organization)
     def get(
         self,
-        org_id: fern_commons.OrganizationId,
+        org_id: str,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> fern.Organization:
         get_owner_response = nursery_client.owner.get(owner_id=org_id)
@@ -79,6 +72,6 @@ class OrganizationsService:
             )
         org_data = read_nursery_org_data(get_owner_response.body.data)
         return fern.Organization(
-            organization_id=org_id,
+            organization_id=fern_commons.OrganizationId.from_str(org_id),
             artifact_read_requires_token=org_data.artifact_read_requires_token,
         )

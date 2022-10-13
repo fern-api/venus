@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: |
   (?x)(
-      ^venus/generated/|
+      ^src/venus/generated/|
       ^deploy/|
       ^scripts/|
       ^.circleci/

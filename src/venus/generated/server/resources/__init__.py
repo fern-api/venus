@@ -4,29 +4,26 @@
 # fmt: off
 # isort: skip_file
 
-from .resources import (
+from .commons import OrganizationId, UnauthorizedError, UserId, UserIdDoesNotExistError
+from .organization import (
     AbstractOrganizationService,
+    CreateOrganizationRequest,
+    Organization,
+    OrganizationAlreadyExistsError,
+    UpdateOrganizationRequest,
+    UserReference,
+)
+from .registry import (
     AbstractRegistryService,
     CheckRegistryPermissionRequest,
-    CreateOrganizationRequest,
     GenerateRegistryTokensRequest,
     MavenRegistryToken,
     NpmRegistryToken,
-    Organization,
-    OrganizationAlreadyExistsError,
-    OrganizationId,
     OrganizationNotFoundError,
-    OrganizationsPage,
     RegistryToken,
     RegistryTokens,
-    UnauthorizedError,
-    UpdateOrganizationRequest,
-    User,
-    UserAleadyExistsError,
-    UserId,
-    UserIdDoesNotExistError,
-    UserReference,
 )
+from .user import OrganizationsPage, User, UserAleadyExistsError
 
 __all__ = [
     "AbstractOrganizationService",
