@@ -88,7 +88,7 @@ class RegistryTokens(pydantic.BaseModel):
         kwargs_with_defaults: typing.Any = {"by_alias": True, **kwargs}
         return super().dict(**kwargs_with_defaults)
 
-    class Partial(typing.TypedDict):
+    class Partial(typing_extensions.TypedDict):
         npm: typing_extensions.NotRequired[NpmRegistryToken]
         maven: typing_extensions.NotRequired[MavenRegistryToken]
 
