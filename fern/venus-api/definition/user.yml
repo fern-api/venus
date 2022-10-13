@@ -13,7 +13,6 @@ types:
       organizations: list<commons.OrganizationId>
       nextPage: optional<integer>
 
-
 # services:
 #   http:
 #     UserService:
@@ -50,5 +49,4 @@ types:
 
 errors:
   UserAleadyExistsError:
-    http:
-      statusCode: 409
+    status-code: 409

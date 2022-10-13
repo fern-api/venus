@@ -3,8 +3,6 @@ types:
   UserId: string
 errors:
   UserIdDoesNotExistError:
-    http:
-      statusCode: 404
+    status-code: 404
   UnauthorizedError:
-    http:
-      statusCode: 401
+    status-code: 401
