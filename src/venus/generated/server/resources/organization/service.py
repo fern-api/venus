@@ -7,6 +7,7 @@
 import abc
 import functools
 import inspect
+import logging
 import typing
 
 import fastapi
@@ -68,7 +69,7 @@ class AbstractOrganizationService(AbstractFernService):
         setattr(cls.create, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
         @functools.wraps(cls.create)
-        def wrapper(*args, **kwargs: typing.Any) -> None:
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
             try:
                 return cls.create(*args, **kwargs)
             except (UnauthorizedError, OrganizationAlreadyExistsError) as e:
@@ -81,7 +82,7 @@ class AbstractOrganizationService(AbstractFernService):
                 )
                 raise e
 
-        router.post(path="/organizations/create", **get_route_args(cls.create))(wrapper)  # type: ignore
+        router.post(path="/organizations/create", **get_route_args(cls.create))(wrapper)
 
     @classmethod
     def __init_update(cls, router: fastapi.APIRouter) -> None:
@@ -99,7 +100,7 @@ class AbstractOrganizationService(AbstractFernService):
         setattr(cls.update, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
         @functools.wraps(cls.update)
-        def wrapper(*args, **kwargs: typing.Any) -> None:
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
             try:
                 return cls.update(*args, **kwargs)
             except UnauthorizedError as e:
@@ -112,7 +113,7 @@ class AbstractOrganizationService(AbstractFernService):
                 )
                 raise e
 
-        router.post(path="/organizations/{org_id}/update", **get_route_args(cls.update))(wrapper)  # type: ignore
+        router.post(path="/organizations/{org_id}/update", **get_route_args(cls.update))(wrapper)
 
     @classmethod
     def __init_get(cls, router: fastapi.APIRouter) -> None:
@@ -128,7 +129,7 @@ class AbstractOrganizationService(AbstractFernService):
         setattr(cls.get, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
         @functools.wraps(cls.get)
-        def wrapper(*args, **kwargs: typing.Any) -> Organization:
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> Organization:
             try:
                 return cls.get(*args, **kwargs)
             except UnauthorizedError as e:
@@ -141,6 +142,4 @@ class AbstractOrganizationService(AbstractFernService):
                 )
                 raise e
 
-        router.get(  # type: ignore
-            path="/organizations/{org_id}", response_model=Organization, **get_route_args(cls.get)
-        )(wrapper)
+        router.get(path="/organizations/{org_id}", response_model=Organization, **get_route_args(cls.get))(wrapper)

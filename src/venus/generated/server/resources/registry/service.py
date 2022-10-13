@@ -7,6 +7,7 @@
 import abc
 import functools
 import inspect
+import logging
 import typing
 
 import fastapi
@@ -63,7 +64,7 @@ class AbstractRegistryService(AbstractFernService):
         setattr(cls.generate_registry_tokens, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
         @functools.wraps(cls.generate_registry_tokens)
-        def wrapper(*args, **kwargs: typing.Any) -> RegistryTokens:
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> RegistryTokens:
             try:
                 return cls.generate_registry_tokens(*args, **kwargs)
             except (UnauthorizedError, OrganizationNotFoundError) as e:
@@ -76,7 +77,7 @@ class AbstractRegistryService(AbstractFernService):
                 )
                 raise e
 
-        router.post(  # type: ignore
+        router.post(
             path="/registry/generate-tokens",
             response_model=RegistryTokens,
             **get_route_args(cls.generate_registry_tokens),
@@ -96,7 +97,7 @@ class AbstractRegistryService(AbstractFernService):
         setattr(cls.has_registry_permission, "__signature__", endpoint_function.replace(parameters=new_parameters))
 
         @functools.wraps(cls.has_registry_permission)
-        def wrapper(*args, **kwargs: typing.Any) -> bool:
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> bool:
             try:
                 return cls.has_registry_permission(*args, **kwargs)
             except (UnauthorizedError, OrganizationNotFoundError) as e:
@@ -109,6 +110,6 @@ class AbstractRegistryService(AbstractFernService):
                 )
                 raise e
 
-        router.post(  # type: ignore
+        router.post(
             path="/registry/check-permissions", response_model=bool, **get_route_args(cls.has_registry_permission)
         )(wrapper)

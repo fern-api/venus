@@ -8,5 +8,5 @@ from ....core.exceptions import FernHTTPException
 
 
 class OrganizationAlreadyExistsError(FernHTTPException):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(status_code=409, name="OrganizationAlreadyExistsError")
