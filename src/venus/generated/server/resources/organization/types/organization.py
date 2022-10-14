@@ -18,6 +18,10 @@ class Organization(pydantic.BaseModel):
     organization_id: OrganizationId = pydantic.Field(alias="organizationId")
     artifact_read_requires_token: bool = pydantic.Field(alias="artifactReadRequiresToken")
 
+    class Partial(typing_extensions.TypedDict):
+        organization_id: typing_extensions.NotRequired[OrganizationId]
+        artifact_read_requires_token: typing_extensions.NotRequired[bool]
+
     class Validators:
         """
         Use this class to add validators to the Pydantic model.
@@ -111,10 +115,6 @@ class Organization(pydantic.BaseModel):
     def dict(self, **kwargs: typing.Any) -> typing.Dict[str, typing.Any]:
         kwargs_with_defaults: typing.Any = {"by_alias": True, **kwargs}
         return super().dict(**kwargs_with_defaults)
-
-    class Partial(typing_extensions.TypedDict):
-        organization_id: typing_extensions.NotRequired[OrganizationId]
-        artifact_read_requires_token: typing_extensions.NotRequired[bool]
 
     class Config:
         frozen = True

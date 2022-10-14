@@ -94,10 +94,6 @@ class _UserReference:
         type: typing_extensions.Literal["userId"]
         user_id: UserId = pydantic.Field(alias="userId")
 
-        class Partial(typing_extensions.TypedDict):
-            type: typing_extensions.NotRequired[typing_extensions.Literal["userId"]]
-            user_id: typing_extensions.NotRequired[UserId]
-
         class Config:
             frozen = True
             allow_population_by_field_name = True
@@ -105,10 +101,6 @@ class _UserReference:
     class EmailAddress(pydantic.BaseModel):
         type: typing_extensions.Literal["emailAddress"]
         email_address: str = pydantic.Field(alias="emailAddress")
-
-        class Partial(typing_extensions.TypedDict):
-            type: typing_extensions.NotRequired[typing_extensions.Literal["emailAddress"]]
-            email_address: typing_extensions.NotRequired[str]
 
         class Config:
             frozen = True
