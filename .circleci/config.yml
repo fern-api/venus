@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run: 
           name: Install fern
-          command: npm install -g fern-api
+          command: sudo npm install -g fern-api
       - run: fern check
       - run:
           name: Verify generated files are up to date
