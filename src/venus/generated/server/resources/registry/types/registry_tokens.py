@@ -19,6 +19,10 @@ class RegistryTokens(pydantic.BaseModel):
     npm: NpmRegistryToken
     maven: MavenRegistryToken
 
+    class Partial(typing_extensions.TypedDict):
+        npm: typing_extensions.NotRequired[NpmRegistryToken]
+        maven: typing_extensions.NotRequired[MavenRegistryToken]
+
     class Validators:
         """
         Use this class to add validators to the Pydantic model.
@@ -107,10 +111,6 @@ class RegistryTokens(pydantic.BaseModel):
     def dict(self, **kwargs: typing.Any) -> typing.Dict[str, typing.Any]:
         kwargs_with_defaults: typing.Any = {"by_alias": True, **kwargs}
         return super().dict(**kwargs_with_defaults)
-
-    class Partial(typing_extensions.TypedDict):
-        npm: typing_extensions.NotRequired[NpmRegistryToken]
-        maven: typing_extensions.NotRequired[MavenRegistryToken]
 
     class Config:
         frozen = True

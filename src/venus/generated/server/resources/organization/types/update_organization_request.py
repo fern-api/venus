@@ -15,6 +15,9 @@ import typing_extensions
 class UpdateOrganizationRequest(pydantic.BaseModel):
     artifact_read_requires_token: bool = pydantic.Field(alias="artifactReadRequiresToken")
 
+    class Partial(typing_extensions.TypedDict):
+        artifact_read_requires_token: typing_extensions.NotRequired[bool]
+
     class Validators:
         """
         Use this class to add validators to the Pydantic model.
@@ -84,9 +87,6 @@ class UpdateOrganizationRequest(pydantic.BaseModel):
     def dict(self, **kwargs: typing.Any) -> typing.Dict[str, typing.Any]:
         kwargs_with_defaults: typing.Any = {"by_alias": True, **kwargs}
         return super().dict(**kwargs_with_defaults)
-
-    class Partial(typing_extensions.TypedDict):
-        artifact_read_requires_token: typing_extensions.NotRequired[bool]
 
     class Config:
         frozen = True

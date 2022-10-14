@@ -18,6 +18,10 @@ class OrganizationsPage(pydantic.BaseModel):
     organizations: typing.List[OrganizationId]
     next_page: typing.Optional[int] = pydantic.Field(alias="nextPage")
 
+    class Partial(typing_extensions.TypedDict):
+        organizations: typing_extensions.NotRequired[typing.List[OrganizationId]]
+        next_page: typing_extensions.NotRequired[typing.Optional[int]]
+
     class Validators:
         """
         Use this class to add validators to the Pydantic model.
@@ -116,10 +120,6 @@ class OrganizationsPage(pydantic.BaseModel):
     def dict(self, **kwargs: typing.Any) -> typing.Dict[str, typing.Any]:
         kwargs_with_defaults: typing.Any = {"by_alias": True, **kwargs}
         return super().dict(**kwargs_with_defaults)
-
-    class Partial(typing_extensions.TypedDict):
-        organizations: typing_extensions.NotRequired[typing.List[OrganizationId]]
-        next_page: typing_extensions.NotRequired[typing.Optional[int]]
 
     class Config:
         frozen = True
