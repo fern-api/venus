@@ -22,6 +22,10 @@ class OrganizationsPage(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @OrganizationsPage.Validators.root
+            def validate(values: OrganizationsPage.Partial) -> OrganizationsPage.Partial:
+                ...
+
             @OrganizationsPage.Validators.field("organizations")
             def validate_organizations(v: typing.List[OrganizationId], values: OrganizationsPage.Partial) -> typing.List[OrganizationId]:
                 ...
@@ -31,10 +35,20 @@ class OrganizationsPage(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[OrganizationsPage.Partial], OrganizationsPage.Partial]]
+        ] = []
         _organizations_validators: typing.ClassVar[
             typing.List[OrganizationsPage.Validators.OrganizationsValidator]
         ] = []
         _next_page_validators: typing.ClassVar[typing.List[OrganizationsPage.Validators.NextPageValidator]] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[OrganizationsPage.Partial], OrganizationsPage.Partial]
+        ) -> typing.Callable[[OrganizationsPage.Partial], OrganizationsPage.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -74,6 +88,12 @@ class OrganizationsPage(pydantic.BaseModel):
         class NextPageValidator(typing_extensions.Protocol):
             def __call__(self, v: typing.Optional[int], *, values: OrganizationsPage.Partial) -> typing.Optional[int]:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: OrganizationsPage.Partial) -> OrganizationsPage.Partial:
+        for validator in OrganizationsPage.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("organizations")
     def _validate_organizations(

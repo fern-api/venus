@@ -21,14 +21,29 @@ class GenerateRegistryTokensRequest(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @GenerateRegistryTokensRequest.Validators.root
+            def validate(values: GenerateRegistryTokensRequest.Partial) -> GenerateRegistryTokensRequest.Partial:
+                ...
+
             @GenerateRegistryTokensRequest.Validators.field("organization_id")
             def validate_organization_id(v: OrganizationId, values: GenerateRegistryTokensRequest.Partial) -> OrganizationId:
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[GenerateRegistryTokensRequest.Partial], GenerateRegistryTokensRequest.Partial]]
+        ] = []
         _organization_id_validators: typing.ClassVar[
             typing.List[GenerateRegistryTokensRequest.Validators.OrganizationIdValidator]
         ] = []
+
+        @classmethod
+        def root(
+            cls,
+            validator: typing.Callable[[GenerateRegistryTokensRequest.Partial], GenerateRegistryTokensRequest.Partial],
+        ) -> typing.Callable[[GenerateRegistryTokensRequest.Partial], GenerateRegistryTokensRequest.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload  # type: ignore
         @classmethod
@@ -52,6 +67,12 @@ class GenerateRegistryTokensRequest(pydantic.BaseModel):
         class OrganizationIdValidator(typing_extensions.Protocol):
             def __call__(self, v: OrganizationId, *, values: GenerateRegistryTokensRequest.Partial) -> OrganizationId:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: GenerateRegistryTokensRequest.Partial) -> GenerateRegistryTokensRequest.Partial:
+        for validator in GenerateRegistryTokensRequest.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("organization_id")
     def _validate_organization_id(

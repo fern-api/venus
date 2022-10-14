@@ -19,12 +19,24 @@ class User(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @User.Validators.root
+            def validate(values: User.Partial) -> User.Partial:
+                ...
+
             @User.Validators.field("username")
             def validate_username(v: str, values: User.Partial) -> str:
                 ...
         """
 
+        _validators: typing.ClassVar[typing.List[typing.Callable[[User.Partial], User.Partial]]] = []
         _username_validators: typing.ClassVar[typing.List[User.Validators.UsernameValidator]] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[User.Partial], User.Partial]
+        ) -> typing.Callable[[User.Partial], User.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload  # type: ignore
         @classmethod
@@ -45,6 +57,12 @@ class User(pydantic.BaseModel):
         class UsernameValidator(typing_extensions.Protocol):
             def __call__(self, v: str, *, values: User.Partial) -> str:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: User.Partial) -> User.Partial:
+        for validator in User.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("username")
     def _validate_username(cls, v: str, values: User.Partial) -> str:
