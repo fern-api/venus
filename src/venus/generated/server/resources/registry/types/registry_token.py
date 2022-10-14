@@ -94,11 +94,17 @@ class _RegistryToken:
     class Npm(NpmRegistryToken):
         type: typing_extensions.Literal["npm"]
 
+        class Partial(NpmRegistryToken.Partial):
+            type: typing_extensions.NotRequired[typing_extensions.Literal["npm"]]
+
         class Config:
             frozen = True
 
     class Maven(MavenRegistryToken):
         type: typing_extensions.Literal["maven"]
+
+        class Partial(MavenRegistryToken.Partial):
+            type: typing_extensions.NotRequired[typing_extensions.Literal["maven"]]
 
         class Config:
             frozen = True
