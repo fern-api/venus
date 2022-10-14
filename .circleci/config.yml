@@ -9,11 +9,15 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - run: |
-          sudo npm install -g fern-api
-          fern check
-          fern generate
-          git --no-pager diff --exit-code
+      - run: 
+          name: Install fern
+          command: git --no-pager diff --exit-code
+      - run: fern check
+      - run:
+          name: Verify generated files are up to date
+          command: |
+            fern generate
+            git --no-pager diff --exit-code
 
 
   check:
