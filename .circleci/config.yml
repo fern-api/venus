@@ -5,13 +5,20 @@ orbs:
 jobs:
   fern-check:
     docker:
-      - image: cimg/openjdk:11.0-node
+      - image: cimg/node:current
     resource_class: medium
     steps:
       - checkout
-      - run: |
-          sudo npm install -g fern-api
-          fern check
+      - run: 
+          name: Install fern
+          command: sudo npm install -g fern-api
+      - run: fern check
+      - run:
+          name: Verify generated files are up to date
+          command: |
+            fern generate
+            git --no-pager diff --exit-code
+
 
   check:
     executor: python/default
