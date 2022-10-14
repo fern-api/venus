@@ -12,6 +12,9 @@ jobs:
       - run: |
           sudo npm install -g fern-api
           fern check
+          fern generate
+          git --no-pager diff --exit-code
+
 
   check:
     executor: python/default
