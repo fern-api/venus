@@ -70,12 +70,16 @@ class AbstractRegistryService(AbstractFernService):
             except (UnauthorizedError, OrganizationNotFoundError) as e:
                 raise e
             except FernHTTPException as e:
-                logging.getLogger(__name__).warn(
-                    f"generate_registry_tokens unexpectedly threw {e.__class__.__name__}. "
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'generate_registry_tokens' unexpectedly threw {e.__class__.__name__}. "
                     + f"If this was intentional, please add {e.__class__.__name__} to "
-                    + "generate_registry_tokens's errors list in your Fern Definition."
+                    + "the endpoint's errors list in your Fern Definition."
                 )
                 raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.generate_registry_tokens.__globals__)
 
         router.post(
             path="/registry/generate-tokens",
@@ -103,12 +107,16 @@ class AbstractRegistryService(AbstractFernService):
             except (UnauthorizedError, OrganizationNotFoundError) as e:
                 raise e
             except FernHTTPException as e:
-                logging.getLogger(__name__).warn(
-                    f"has_registry_permission unexpectedly threw {e.__class__.__name__}. "
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'has_registry_permission' unexpectedly threw {e.__class__.__name__}. "
                     + f"If this was intentional, please add {e.__class__.__name__} to "
-                    + "has_registry_permission's errors list in your Fern Definition."
+                    + "the endpoint's errors list in your Fern Definition."
                 )
                 raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.has_registry_permission.__globals__)
 
         router.post(
             path="/registry/check-permissions", response_model=bool, **get_route_args(cls.has_registry_permission)

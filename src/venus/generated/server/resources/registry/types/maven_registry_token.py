@@ -20,6 +20,10 @@ class MavenRegistryToken(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @MavenRegistryToken.Validators.root
+            def validate(values: MavenRegistryToken.Partial) -> MavenRegistryToken.Partial:
+                ...
+
             @MavenRegistryToken.Validators.field("username")
             def validate_username(v: str, values: MavenRegistryToken.Partial) -> str:
                 ...
@@ -29,8 +33,18 @@ class MavenRegistryToken(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[MavenRegistryToken.Partial], MavenRegistryToken.Partial]]
+        ] = []
         _username_validators: typing.ClassVar[typing.List[MavenRegistryToken.Validators.UsernameValidator]] = []
         _password_validators: typing.ClassVar[typing.List[MavenRegistryToken.Validators.PasswordValidator]] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[MavenRegistryToken.Partial], MavenRegistryToken.Partial]
+        ) -> typing.Callable[[MavenRegistryToken.Partial], MavenRegistryToken.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -68,6 +82,12 @@ class MavenRegistryToken(pydantic.BaseModel):
         class PasswordValidator(typing_extensions.Protocol):
             def __call__(self, v: str, *, values: MavenRegistryToken.Partial) -> str:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: MavenRegistryToken.Partial) -> MavenRegistryToken.Partial:
+        for validator in MavenRegistryToken.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("username")
     def _validate_username(cls, v: str, values: MavenRegistryToken.Partial) -> str:

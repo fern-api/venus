@@ -75,12 +75,16 @@ class AbstractOrganizationService(AbstractFernService):
             except (UnauthorizedError, OrganizationAlreadyExistsError) as e:
                 raise e
             except FernHTTPException as e:
-                logging.getLogger(__name__).warn(
-                    f"create unexpectedly threw {e.__class__.__name__}. "
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'create' unexpectedly threw {e.__class__.__name__}. "
                     + f"If this was intentional, please add {e.__class__.__name__} to "
-                    + "create's errors list in your Fern Definition."
+                    + "the endpoint's errors list in your Fern Definition."
                 )
                 raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.create.__globals__)
 
         router.post(path="/organizations/create", **get_route_args(cls.create))(wrapper)
 
@@ -106,12 +110,16 @@ class AbstractOrganizationService(AbstractFernService):
             except UnauthorizedError as e:
                 raise e
             except FernHTTPException as e:
-                logging.getLogger(__name__).warn(
-                    f"update unexpectedly threw {e.__class__.__name__}. "
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'update' unexpectedly threw {e.__class__.__name__}. "
                     + f"If this was intentional, please add {e.__class__.__name__} to "
-                    + "update's errors list in your Fern Definition."
+                    + "the endpoint's errors list in your Fern Definition."
                 )
                 raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.update.__globals__)
 
         router.post(path="/organizations/{org_id}/update", **get_route_args(cls.update))(wrapper)
 
@@ -135,11 +143,15 @@ class AbstractOrganizationService(AbstractFernService):
             except UnauthorizedError as e:
                 raise e
             except FernHTTPException as e:
-                logging.getLogger(__name__).warn(
-                    f"get unexpectedly threw {e.__class__.__name__}. "
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'get' unexpectedly threw {e.__class__.__name__}. "
                     + f"If this was intentional, please add {e.__class__.__name__} to "
-                    + "get's errors list in your Fern Definition."
+                    + "the endpoint's errors list in your Fern Definition."
                 )
                 raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.get.__globals__)
 
         router.get(path="/organizations/{org_id}", response_model=Organization, **get_route_args(cls.get))(wrapper)

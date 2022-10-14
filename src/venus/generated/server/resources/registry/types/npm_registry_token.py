@@ -19,12 +19,26 @@ class NpmRegistryToken(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @NpmRegistryToken.Validators.root
+            def validate(values: NpmRegistryToken.Partial) -> NpmRegistryToken.Partial:
+                ...
+
             @NpmRegistryToken.Validators.field("token")
             def validate_token(v: str, values: NpmRegistryToken.Partial) -> str:
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[NpmRegistryToken.Partial], NpmRegistryToken.Partial]]
+        ] = []
         _token_validators: typing.ClassVar[typing.List[NpmRegistryToken.Validators.TokenValidator]] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[NpmRegistryToken.Partial], NpmRegistryToken.Partial]
+        ) -> typing.Callable[[NpmRegistryToken.Partial], NpmRegistryToken.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload  # type: ignore
         @classmethod
@@ -45,6 +59,12 @@ class NpmRegistryToken(pydantic.BaseModel):
         class TokenValidator(typing_extensions.Protocol):
             def __call__(self, v: str, *, values: NpmRegistryToken.Partial) -> str:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: NpmRegistryToken.Partial) -> NpmRegistryToken.Partial:
+        for validator in NpmRegistryToken.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("token")
     def _validate_token(cls, v: str, values: NpmRegistryToken.Partial) -> str:

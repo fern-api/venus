@@ -23,6 +23,10 @@ class RegistryTokens(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @RegistryTokens.Validators.root
+            def validate(values: RegistryTokens.Partial) -> RegistryTokens.Partial:
+                ...
+
             @RegistryTokens.Validators.field("npm")
             def validate_npm(v: NpmRegistryToken, values: RegistryTokens.Partial) -> NpmRegistryToken:
                 ...
@@ -32,8 +36,18 @@ class RegistryTokens(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[RegistryTokens.Partial], RegistryTokens.Partial]]
+        ] = []
         _npm_validators: typing.ClassVar[typing.List[RegistryTokens.Validators.NpmValidator]] = []
         _maven_validators: typing.ClassVar[typing.List[RegistryTokens.Validators.MavenValidator]] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[RegistryTokens.Partial], RegistryTokens.Partial]
+        ) -> typing.Callable[[RegistryTokens.Partial], RegistryTokens.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -67,6 +81,12 @@ class RegistryTokens(pydantic.BaseModel):
         class MavenValidator(typing_extensions.Protocol):
             def __call__(self, v: MavenRegistryToken, *, values: RegistryTokens.Partial) -> MavenRegistryToken:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: RegistryTokens.Partial) -> RegistryTokens.Partial:
+        for validator in RegistryTokens.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("npm")
     def _validate_npm(cls, v: NpmRegistryToken, values: RegistryTokens.Partial) -> NpmRegistryToken:

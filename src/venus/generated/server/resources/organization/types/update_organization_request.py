@@ -19,14 +19,28 @@ class UpdateOrganizationRequest(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @UpdateOrganizationRequest.Validators.root
+            def validate(values: UpdateOrganizationRequest.Partial) -> UpdateOrganizationRequest.Partial:
+                ...
+
             @UpdateOrganizationRequest.Validators.field("artifact_read_requires_token")
             def validate_artifact_read_requires_token(v: bool, values: UpdateOrganizationRequest.Partial) -> bool:
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[UpdateOrganizationRequest.Partial], UpdateOrganizationRequest.Partial]]
+        ] = []
         _artifact_read_requires_token_validators: typing.ClassVar[
             typing.List[UpdateOrganizationRequest.Validators.ArtifactReadRequiresTokenValidator]
         ] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[UpdateOrganizationRequest.Partial], UpdateOrganizationRequest.Partial]
+        ) -> typing.Callable[[UpdateOrganizationRequest.Partial], UpdateOrganizationRequest.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload  # type: ignore
         @classmethod
@@ -50,6 +64,12 @@ class UpdateOrganizationRequest(pydantic.BaseModel):
         class ArtifactReadRequiresTokenValidator(typing_extensions.Protocol):
             def __call__(self, v: bool, *, values: UpdateOrganizationRequest.Partial) -> bool:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: UpdateOrganizationRequest.Partial) -> UpdateOrganizationRequest.Partial:
+        for validator in UpdateOrganizationRequest.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("artifact_read_requires_token")
     def _validate_artifact_read_requires_token(cls, v: bool, values: UpdateOrganizationRequest.Partial) -> bool:

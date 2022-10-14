@@ -22,6 +22,10 @@ class CreateOrganizationRequest(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @CreateOrganizationRequest.Validators.root
+            def validate(values: CreateOrganizationRequest.Partial) -> CreateOrganizationRequest.Partial:
+                ...
+
             @CreateOrganizationRequest.Validators.field("organization_id")
             def validate_organization_id(v: OrganizationId, values: CreateOrganizationRequest.Partial) -> OrganizationId:
                 ...
@@ -31,12 +35,22 @@ class CreateOrganizationRequest(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[typing.Callable[[CreateOrganizationRequest.Partial], CreateOrganizationRequest.Partial]]
+        ] = []
         _organization_id_validators: typing.ClassVar[
             typing.List[CreateOrganizationRequest.Validators.OrganizationIdValidator]
         ] = []
         _artifact_read_requires_token_validators: typing.ClassVar[
             typing.List[CreateOrganizationRequest.Validators.ArtifactReadRequiresTokenValidator]
         ] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[CreateOrganizationRequest.Partial], CreateOrganizationRequest.Partial]
+        ) -> typing.Callable[[CreateOrganizationRequest.Partial], CreateOrganizationRequest.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -78,6 +92,12 @@ class CreateOrganizationRequest(pydantic.BaseModel):
                 self, v: typing.Optional[bool], *, values: CreateOrganizationRequest.Partial
             ) -> typing.Optional[bool]:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: CreateOrganizationRequest.Partial) -> CreateOrganizationRequest.Partial:
+        for validator in CreateOrganizationRequest.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("organization_id")
     def _validate_organization_id(cls, v: OrganizationId, values: CreateOrganizationRequest.Partial) -> OrganizationId:

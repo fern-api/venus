@@ -1,6 +1,6 @@
 draft:
   - name: fernapi/fern-fastapi-server
-    version: 0.0.13-27-g1ac5829
+    version: 0.0.13-31-g9772c5d
     mode: download-files
     output-path: ../../src/venus/generated/server
 release: []

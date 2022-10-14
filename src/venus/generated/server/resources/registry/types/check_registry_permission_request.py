@@ -23,6 +23,10 @@ class CheckRegistryPermissionRequest(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @CheckRegistryPermissionRequest.Validators.root
+            def validate(values: CheckRegistryPermissionRequest.Partial) -> CheckRegistryPermissionRequest.Partial:
+                ...
+
             @CheckRegistryPermissionRequest.Validators.field("organization_id")
             def validate_organization_id(v: OrganizationId, values: CheckRegistryPermissionRequest.Partial) -> OrganizationId:
                 ...
@@ -32,10 +36,25 @@ class CheckRegistryPermissionRequest(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[
+            typing.List[
+                typing.Callable[[CheckRegistryPermissionRequest.Partial], CheckRegistryPermissionRequest.Partial]
+            ]
+        ] = []
         _organization_id_validators: typing.ClassVar[
             typing.List[CheckRegistryPermissionRequest.Validators.OrganizationIdValidator]
         ] = []
         _token_validators: typing.ClassVar[typing.List[CheckRegistryPermissionRequest.Validators.TokenValidator]] = []
+
+        @classmethod
+        def root(
+            cls,
+            validator: typing.Callable[
+                [CheckRegistryPermissionRequest.Partial], CheckRegistryPermissionRequest.Partial
+            ],
+        ) -> typing.Callable[[CheckRegistryPermissionRequest.Partial], CheckRegistryPermissionRequest.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -77,6 +96,12 @@ class CheckRegistryPermissionRequest(pydantic.BaseModel):
                 self, v: typing.Optional[RegistryToken], *, values: CheckRegistryPermissionRequest.Partial
             ) -> typing.Optional[RegistryToken]:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: CheckRegistryPermissionRequest.Partial) -> CheckRegistryPermissionRequest.Partial:
+        for validator in CheckRegistryPermissionRequest.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("organization_id")
     def _validate_organization_id(

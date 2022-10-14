@@ -22,6 +22,10 @@ class Organization(pydantic.BaseModel):
         """
         Use this class to add validators to the Pydantic model.
 
+            @Organization.Validators.root
+            def validate(values: Organization.Partial) -> Organization.Partial:
+                ...
+
             @Organization.Validators.field("organization_id")
             def validate_organization_id(v: OrganizationId, values: Organization.Partial) -> OrganizationId:
                 ...
@@ -31,10 +35,18 @@ class Organization(pydantic.BaseModel):
                 ...
         """
 
+        _validators: typing.ClassVar[typing.List[typing.Callable[[Organization.Partial], Organization.Partial]]] = []
         _organization_id_validators: typing.ClassVar[typing.List[Organization.Validators.OrganizationIdValidator]] = []
         _artifact_read_requires_token_validators: typing.ClassVar[
             typing.List[Organization.Validators.ArtifactReadRequiresTokenValidator]
         ] = []
+
+        @classmethod
+        def root(
+            cls, validator: typing.Callable[[Organization.Partial], Organization.Partial]
+        ) -> typing.Callable[[Organization.Partial], Organization.Partial]:
+            cls._validators.append(validator)
+            return validator
 
         @typing.overload
         @classmethod
@@ -73,6 +85,12 @@ class Organization(pydantic.BaseModel):
         class ArtifactReadRequiresTokenValidator(typing_extensions.Protocol):
             def __call__(self, v: bool, *, values: Organization.Partial) -> bool:
                 ...
+
+    @pydantic.root_validator
+    def _validate(cls, values: Organization.Partial) -> Organization.Partial:
+        for validator in Organization.Validators._validators:
+            values = validator(values)
+        return values
 
     @pydantic.validator("organization_id")
     def _validate_organization_id(cls, v: OrganizationId, values: Organization.Partial) -> OrganizationId:
