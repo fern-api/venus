@@ -21,7 +21,7 @@ def test_create_and_update_org(nursery_docker):  # type: ignore
     create_org_response = client.post(
         "/organizations/create", json={"organizationId": org_id}
     )
-    assert create_org_response.status_code == 200
+    assert create_org_response.status_code == 204
     # get org from nursery
     get_owner_response = get_nursery_client().owner.get(owner_id=org_id)
     if get_owner_response.ok:
@@ -39,7 +39,7 @@ def test_create_and_update_org(nursery_docker):  # type: ignore
         f"/organizations/{org_id}/update",
         json={"artifactReadRequiresToken": True},
     )
-    assert update_org_response.status_code == 200
+    assert update_org_response.status_code == 204
     # get org from nursery
     get_owner_response = get_nursery_client().owner.get(owner_id=org_id)
     if get_owner_response.ok:
