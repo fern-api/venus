@@ -1,6 +1,9 @@
-draft:
-  - name: fernapi/fern-fastapi-server
-    version: 0.0.13-33-gff1965c
-    mode: download-files
-    output-path: ../../src/venus/generated/server
-release: []
+default-group: server
+groups:
+  server:
+    generators:
+      - name: fernapi/fern-fastapi-server
+        version: 0.0.25
+        output:
+          location: local-file-system
+          path: ../../src/venus/generated/server
