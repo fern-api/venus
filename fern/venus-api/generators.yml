@@ -7,3 +7,7 @@ groups:
         output:
           location: local-file-system
           path: ../../src/venus/generated/server
+  sdks:
+    generators:
+      - name: fernapi/fern-java-sdk
+        version: 0.0.130
