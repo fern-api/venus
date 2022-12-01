@@ -43,6 +43,19 @@ jobs:
       - run:
           name: test
           command: /home/circleci/.local/bin/poetry run pytest -sv
+    
+  generate-sdks:
+    docker:
+      - image: cimg/node:current
+    resource_class: medium
+    steps:
+      - checkout
+      - run: 
+          name: Install fern
+          command: sudo npm install -g fern-api
+      - run: | 
+          git_version="$(scripts/git-version.sh)"
+          fern generate --group sdks --version "${git_version}"
   
   publish-docker: 
     machine: 
@@ -104,6 +117,16 @@ workflows:
           filters:
             tags:
               only: /.*/
+      
+      - generate-sdks: 
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /.*/
+          requires:
+            - check
+            - test
 
       - deploy-dev:
           filters:
