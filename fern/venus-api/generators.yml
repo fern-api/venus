@@ -11,4 +11,3 @@ groups:
     generators:
       - name: fernapi/fern-java-sdk
         version: 0.0.130
-    
