@@ -3,7 +3,6 @@ from .types import CreateTokenRequest
 from .types import CreateTokenResponse
 from .types import GetTokenMetadataRequest
 from .types import TokenId
-from .types import TokenMetadata
 
 
 __all__ = [
@@ -11,6 +10,5 @@ __all__ = [
     "CreateTokenResponse",
     "GetTokenMetadataRequest",
     "TokenId",
-    "TokenMetadata",
     "TokenService",
 ]

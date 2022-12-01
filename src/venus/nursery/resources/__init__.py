@@ -7,7 +7,6 @@ from .token import CreateTokenRequest
 from .token import CreateTokenResponse
 from .token import GetTokenMetadataRequest
 from .token import TokenId
-from .token import TokenMetadata
 from .token import TokenService
 
 
@@ -22,5 +21,4 @@ __all__ = [
     "CreateTokenResponse",
     "GetTokenMetadataRequest",
     "TokenId",
-    "TokenMetadata",
 ]

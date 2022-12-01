@@ -9,6 +9,7 @@ from .types import (
     NpmRegistryToken,
     RegistryToken,
     RegistryTokens,
+    RevokeTokenRequest,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "OrganizationNotFoundError",
     "RegistryToken",
     "RegistryTokens",
+    "RevokeTokenRequest",
 ]
