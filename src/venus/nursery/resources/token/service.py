@@ -3,6 +3,8 @@ from urllib.parse import urljoin
 
 import requests
 
+from fern.nursery import RevokeTokenRequest
+from fern.nursery import TokenMetadata
 from pydantic import parse_obj_as
 
 from ..._core import Response
@@ -12,7 +14,6 @@ from ..owner import OwnerId
 from .types import CreateTokenRequest
 from .types import CreateTokenResponse
 from .types import GetTokenMetadataRequest
-from .types import TokenMetadata
 
 
 class TokenService:
@@ -63,5 +64,16 @@ class TokenService:
             return SuccessResponse(
                 ok=True, body=parse_obj_as(List[TokenMetadata], response.text)
             )
+        else:
+            return FailedResponse(ok=False, error=None)
+
+    def revoke_token(
+        self, *, body: RevokeTokenRequest
+    ) -> Response[None, None]:
+        response = requests.post(
+            url=urljoin(self.origin, "tokens/revoke"),
+        )
+        if response.status_code >= 200 and response.status_code < 300:
+            return SuccessResponse(ok=True, body=None)
         else:
             return FailedResponse(ok=False, error=None)

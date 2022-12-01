@@ -6,6 +6,7 @@ from .maven_registry_token import MavenRegistryToken
 from .npm_registry_token import NpmRegistryToken
 from .registry_token import RegistryToken
 from .registry_tokens import RegistryTokens
+from .revoke_token_request import RevokeTokenRequest
 
 __all__ = [
     "CheckRegistryPermissionRequest",
@@ -14,4 +15,5 @@ __all__ = [
     "NpmRegistryToken",
     "RegistryToken",
     "RegistryTokens",
+    "RevokeTokenRequest",
 ]

@@ -1,4 +1,5 @@
 from fastapi import Depends
+from fern.nursery.pydantic.token import RevokeTokenRequest
 
 import venus.generated.server.resources as fern
 
@@ -61,6 +62,16 @@ class RegistryService(fern.AbstractRegistryService):
                 body=GetTokenMetadataRequest(token=token)
             )
             if token_metadata_response.ok:
-                return True
+                status = token_metadata_response.body.status.get_as_union()
+                return status.type == "active"
             else:
                 return False
+
+    def revoke_token(
+        self,
+        body: fern.RevokeTokenRequest,
+        nursery_client: NurseryApiClient = Depends(get_nursery_client),
+    ) -> None:
+        nursery_client.token.revoke_token(
+            body=RevokeTokenRequest(token=body.token)
+        )

@@ -18,6 +18,7 @@ from .registry import (
     OrganizationNotFoundError,
     RegistryToken,
     RegistryTokens,
+    RevokeTokenRequest,
 )
 from .user import OrganizationsPage, User, UserAleadyExistsError
 
@@ -36,6 +37,7 @@ __all__ = [
     "OrganizationsPage",
     "RegistryToken",
     "RegistryTokens",
+    "RevokeTokenRequest",
     "UnauthorizedError",
     "UpdateOrganizationRequest",
     "User",

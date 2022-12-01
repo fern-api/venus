@@ -7,6 +7,7 @@ import logging
 import typing
 
 import fastapi
+import starlette
 
 from ...core.abstract_fern_service import AbstractFernService
 from ...core.exceptions.fern_http_exception import FernHTTPException
@@ -16,6 +17,7 @@ from .errors.organization_not_found_error import OrganizationNotFoundError
 from .types.check_registry_permission_request import CheckRegistryPermissionRequest
 from .types.generate_registry_tokens_request import GenerateRegistryTokensRequest
 from .types.registry_tokens import RegistryTokens
+from .types.revoke_token_request import RevokeTokenRequest
 
 
 class AbstractRegistryService(AbstractFernService):
@@ -36,6 +38,10 @@ class AbstractRegistryService(AbstractFernService):
     def has_registry_permission(self, *, body: CheckRegistryPermissionRequest) -> bool:
         ...
 
+    @abc.abstractmethod
+    def revoke_token(self, *, body: RevokeTokenRequest) -> None:
+        ...
+
     """
     Below are internal methods used by Fern to register your implementation.
     You can ignore them.
@@ -45,6 +51,7 @@ class AbstractRegistryService(AbstractFernService):
     def _init_fern(cls, router: fastapi.APIRouter) -> None:
         cls.__init_generate_registry_tokens(router=router)
         cls.__init_has_registry_permission(router=router)
+        cls.__init_revoke_token(router=router)
 
     @classmethod
     def __init_generate_registry_tokens(cls, router: fastapi.APIRouter) -> None:
@@ -120,4 +127,42 @@ class AbstractRegistryService(AbstractFernService):
             response_model=bool,
             description=cls.has_registry_permission.__doc__,
             **get_route_args(cls.has_registry_permission, default_tag="registry"),
+        )(wrapper)
+
+    @classmethod
+    def __init_revoke_token(cls, router: fastapi.APIRouter) -> None:
+        endpoint_function = inspect.signature(cls.revoke_token)
+        new_parameters: typing.List[inspect.Parameter] = []
+        for index, (parameter_name, parameter) in enumerate(endpoint_function.parameters.items()):
+            if index == 0:
+                new_parameters.append(parameter.replace(default=fastapi.Depends(cls)))
+            elif parameter_name == "body":
+                new_parameters.append(parameter.replace(default=fastapi.Body(...)))
+            else:
+                new_parameters.append(parameter)
+        setattr(cls.revoke_token, "__signature__", endpoint_function.replace(parameters=new_parameters))
+
+        @functools.wraps(cls.revoke_token)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
+            try:
+                return cls.revoke_token(*args, **kwargs)
+            except (UnauthorizedError, OrganizationNotFoundError) as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'revoke_token' unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "the endpoint's errors list in your Fern Definition."
+                )
+                raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.revoke_token.__globals__)
+
+        router.post(
+            path="/registry/revoke-token",
+            status_code=starlette.status.HTTP_204_NO_CONTENT,
+            description=cls.revoke_token.__doc__,
+            **get_route_args(cls.revoke_token, default_tag="registry"),
         )(wrapper)

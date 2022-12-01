@@ -31,6 +31,11 @@ types:
       npm: NpmRegistryToken
       maven: MavenRegistryToken
 
+  RevokeTokenRequest:
+    properties:
+      organizationId: commons.OrganizationId
+      token: string
+
 services:
   http:
     RegistryService:
@@ -51,6 +56,14 @@ services:
           path: /check-permissions
           request: CheckRegistryPermissionRequest
           response: boolean
+          errors:
+            - commons.UnauthorizedError
+            - OrganizationNotFoundError
+
+        revokeToken:
+          method: POST
+          path: /revoke-token
+          request: RevokeTokenRequest
           errors:
             - commons.UnauthorizedError
             - OrganizationNotFoundError
