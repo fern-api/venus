@@ -59,6 +59,16 @@ services:
           response: Organization
           errors:
             - commons.UnauthorizedError
+        
+        getMyOrg: 
+          method: GET
+          path: /myself
+          docs: Returns the org that the supplied auth has permission for
+          auth: true
+          response: Organization
+          errors: 
+            - commons.UnauthorizedError
+
         # addMember:
         #   method: POST
         #   path: /add-members
