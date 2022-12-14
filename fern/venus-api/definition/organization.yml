@@ -60,10 +60,10 @@ services:
           errors:
             - commons.UnauthorizedError
         
-        getMyOrg: 
+        getMyOrganizationFromScopedToken: 
           method: GET
           path: /myself
-          docs: Returns the org that the supplied auth has permission for
+          docs: Returns the org for a scoped token. The token is limited to one organization.
           auth: true
           response: Organization
           errors: 

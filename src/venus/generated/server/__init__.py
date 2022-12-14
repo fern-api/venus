@@ -24,10 +24,12 @@ from .resources import (
     UserIdDoesNotExistError,
     UserReference,
 )
+from .security import ApiAuth
 
 __all__ = [
     "AbstractOrganizationService",
     "AbstractRegistryService",
+    "ApiAuth",
     "CheckRegistryPermissionRequest",
     "CreateOrganizationRequest",
     "GenerateRegistryTokensRequest",
