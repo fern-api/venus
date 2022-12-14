@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   nursery:
-    image: fernapi/nursery:0.0.57
+    image: fernapi/nursery:0.0.57-2-gcb15c1e
     ports:
       - 8080:8080
     environment:
