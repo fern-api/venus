@@ -71,6 +71,13 @@ class OrganizationsService(fern.AbstractOrganizationService):
         org_id: str,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> fern.Organization:
+        return self._get_organization(
+            org_id=org_id, nursery_client=nursery_client
+        )
+
+    def _get_organization(
+        self, org_id: str, nursery_client: NurseryApiClient
+    ) -> fern.Organization:
         get_owner_response = nursery_client.owner.get(owner_id=org_id)
         if not get_owner_response.ok:
             raise Exception(
@@ -98,4 +105,6 @@ class OrganizationsService(fern.AbstractOrganizationService):
         if token_status.type == "expired" or token_status.type == "revoked":
             raise fern_commons.UnauthorizedError()
         owner_id = get_token_metadata_response.body.owner_id.get_as_str()
-        return self.get(owner_id, nursery_client)
+        return self._get_organization(
+            org_id=owner_id, nursery_client=nursery_client
+        )
