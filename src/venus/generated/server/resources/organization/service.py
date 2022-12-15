@@ -212,7 +212,7 @@ class AbstractOrganizationService(AbstractFernService):
         # https://github.com/tiangolo/fastapi/pull/5077
         wrapper.__globals__.update(cls.get_my_organization_from_scoped_token.__globals__)
 
-        router.get(
+        router.post(
             path="/organizations/myself",
             response_model=Organization,
             description=cls.get_my_organization_from_scoped_token.__doc__,
