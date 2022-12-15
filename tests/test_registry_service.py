@@ -45,8 +45,7 @@ def test_generate_and_use_token(nursery_docker) -> None:  # type: ignore
     )
     assert check_token_response.status_code == 200
 
-    # get myself works
-    my_org = client.get(
+    my_org = client.post(
         "/organizations/myself",
         headers={"Authorization": f"Bearer {npm_token}"},
     )
