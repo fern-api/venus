@@ -74,7 +74,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         get_owner_response = nursery_client.owner.get(owner_id=org_id)
         if not get_owner_response.ok:
             raise Exception(
-                "Encountered error while retrieving org",
+                f"Encountered error while retrieving org from nursery {org_id}",
                 get_owner_response.error,
             )
         org_data = read_nursery_org_data(get_owner_response.body.data)
