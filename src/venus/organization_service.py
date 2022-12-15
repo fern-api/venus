@@ -1,3 +1,4 @@
+import logging
 from fastapi import Depends
 
 import venus.generated.server.resources.commons as fern_commons
@@ -20,6 +21,8 @@ from venus.nursery.resources.token.types.get_token_metadata_request import (
 )
 from venus.nursery_owner_data import NurseryOrgData
 from venus.nursery_owner_data import read_nursery_org_data
+
+logger = logging.getLogger(__name__)
 
 
 class OrganizationsService(fern.AbstractOrganizationService):
@@ -79,6 +82,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         auth: ApiAuth,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> Organization:
+        logging.error("In get_my_organization_from_scoped_token")
         get_token_metadata_response = nursery_client.token.get_token_metadata(
             body=GetTokenMetadataRequest(token=auth.token)
         )
@@ -88,14 +92,14 @@ class OrganizationsService(fern.AbstractOrganizationService):
         if token_status.type == "expired" or token_status.type == "revoked":
             raise fern_commons.UnauthorizedError()
         owner_id = get_token_metadata_response.body.owner_id.get_as_str()
-        print(f"Token has owner id {owner_id}")
+        logging.error(f"Token has owner id {owner_id}")
         return _get_owner(owner_id=owner_id, nursery_client=nursery_client)
 
 
 def _get_owner(
     *, owner_id: str, nursery_client: NurseryApiClient
 ) -> fern.Organization:
-    print(f"Getting owner with id {owner_id}")
+    logging.error(f"Getting owner with id {owner_id}")
     get_owner_response = nursery_client.owner.get(owner_id=owner_id)
     if not get_owner_response.ok:
         raise Exception(
