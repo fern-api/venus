@@ -6,46 +6,42 @@ imports:
 types:
   User:
     properties:
+      userId: commons.UserId
       username: string
+      email: optional<string>
 
   OrganizationsPage:
     properties:
       organizations: list<commons.OrganizationId>
       nextPage: optional<integer>
 
-# services:
-#   http:
-#     UserService:
-#       auth: false # TODO make true
-#       base-path: /users
-#       endpoints:
+services:
+  http:
+    UserService:
+      auth: true
+      base-path: /users
+      endpoints:
 
-#         create:
-#           method: POST
-#           path: /create
-#           errors:
-#             - commons.UnauthorizedError
-#             - UserAleadyExistsError
+        getMyself:
+          method: GET
+          path: /
+          response: User
 
-#         get:
-#           method: GET
-#           path: /
-#           response: User
+        getMyOrganizations:
+          method: GET
+          path: /organizations
+          response: OrganizationsPage
+          request:
+            name: GetUserOrganizationsRequest
+            query-parameters:
+              pageId: integer
 
-#         getOrganizations:
-#           method: GET
-#           path: /organizations
-#           query-parameters:
-#             pageId: integer
-#           response: OrganizationsPage
-
-#         belongsToOrganization:
-#           method: GET
-#           path: /belongs-to-organization/{organizationId}
-#           path-parameters:
-#             organizationId: commons.OrganizationId
-#           response: boolean
-
+        belongsToOrganization:
+          method: GET
+          path: /belongs-to-organization/{organizationId}
+          path-parameters:
+            organizationId: commons.OrganizationId
+          response: boolean
 
 errors:
   UserAleadyExistsError:

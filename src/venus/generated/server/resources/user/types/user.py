@@ -7,12 +7,18 @@ import typing
 import pydantic
 import typing_extensions
 
+from ...commons.types.user_id import UserId
+
 
 class User(pydantic.BaseModel):
+    user_id: UserId = pydantic.Field(alias="userId")
     username: str
+    email: typing.Optional[str]
 
     class Partial(typing_extensions.TypedDict):
+        user_id: typing_extensions.NotRequired[UserId]
         username: typing_extensions.NotRequired[str]
+        email: typing_extensions.NotRequired[typing.Optional[str]]
 
     class Validators:
         """
@@ -22,13 +28,23 @@ class User(pydantic.BaseModel):
             def validate(values: User.Partial) -> User.Partial:
                 ...
 
+            @User.Validators.field("user_id")
+            def validate_user_id(user_id: UserId, values: User.Partial) -> UserId:
+                ...
+
             @User.Validators.field("username")
             def validate_username(username: str, values: User.Partial) -> str:
+                ...
+
+            @User.Validators.field("email")
+            def validate_email(email: typing.Optional[str], values: User.Partial) -> typing.Optional[str]:
                 ...
         """
 
         _validators: typing.ClassVar[typing.List[typing.Callable[[User.Partial], User.Partial]]] = []
+        _user_id_validators: typing.ClassVar[typing.List[User.Validators.UserIdValidator]] = []
         _username_validators: typing.ClassVar[typing.List[User.Validators.UsernameValidator]] = []
+        _email_validators: typing.ClassVar[typing.List[User.Validators.EmailValidator]] = []
 
         @classmethod
         def root(
@@ -37,24 +53,50 @@ class User(pydantic.BaseModel):
             cls._validators.append(validator)
             return validator
 
-        @typing.overload  # type: ignore
+        @typing.overload
+        @classmethod
+        def field(
+            cls, field_name: typing_extensions.Literal["user_id"]
+        ) -> typing.Callable[[User.Validators.UserIdValidator], User.Validators.UserIdValidator]:
+            ...
+
+        @typing.overload
         @classmethod
         def field(
             cls, field_name: typing_extensions.Literal["username"]
         ) -> typing.Callable[[User.Validators.UsernameValidator], User.Validators.UsernameValidator]:
             ...
 
+        @typing.overload
+        @classmethod
+        def field(
+            cls, field_name: typing_extensions.Literal["email"]
+        ) -> typing.Callable[[User.Validators.EmailValidator], User.Validators.EmailValidator]:
+            ...
+
         @classmethod
         def field(cls, field_name: str) -> typing.Any:
             def decorator(validator: typing.Any) -> typing.Any:
+                if field_name == "user_id":
+                    cls._user_id_validators.append(validator)
                 if field_name == "username":
                     cls._username_validators.append(validator)
+                if field_name == "email":
+                    cls._email_validators.append(validator)
                 return validator
 
             return decorator
 
+        class UserIdValidator(typing_extensions.Protocol):
+            def __call__(self, __v: UserId, __values: User.Partial) -> UserId:
+                ...
+
         class UsernameValidator(typing_extensions.Protocol):
             def __call__(self, __v: str, __values: User.Partial) -> str:
+                ...
+
+        class EmailValidator(typing_extensions.Protocol):
+            def __call__(self, __v: typing.Optional[str], __values: User.Partial) -> typing.Optional[str]:
                 ...
 
     @pydantic.root_validator
@@ -63,9 +105,21 @@ class User(pydantic.BaseModel):
             values = validator(values)
         return values
 
+    @pydantic.validator("user_id")
+    def _validate_user_id(cls, v: UserId, values: User.Partial) -> UserId:
+        for validator in User.Validators._user_id_validators:
+            v = validator(v, values)
+        return v
+
     @pydantic.validator("username")
     def _validate_username(cls, v: str, values: User.Partial) -> str:
         for validator in User.Validators._username_validators:
+            v = validator(v, values)
+        return v
+
+    @pydantic.validator("email")
+    def _validate_email(cls, v: typing.Optional[str], values: User.Partial) -> typing.Optional[str]:
+        for validator in User.Validators._email_validators:
             v = validator(v, values)
         return v
 
@@ -79,3 +133,4 @@ class User(pydantic.BaseModel):
 
     class Config:
         frozen = True
+        allow_population_by_field_name = True

@@ -3,12 +3,22 @@ import uvicorn
 from fastapi import FastAPI
 
 from venus.generated.server.register import register
+from venus.global_dependencies import get_auth0
+from venus.global_dependencies import get_nursery_client
 from venus.organization_service import OrganizationsService
 from venus.registry_service import RegistryService
+from venus.user_service import UserService
 
 
 app = FastAPI()
-register(app, organization=OrganizationsService(), registry=RegistryService())
+register(
+    app,
+    organization=OrganizationsService(),
+    registry=RegistryService(),
+    user=UserService(
+        nursery_client=get_nursery_client(), auth0_client=get_auth0()
+    ),
+)
 
 
 @app.get("/health")

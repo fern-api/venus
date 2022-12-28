@@ -1,3 +1,5 @@
 name: venus-api
 auth: bearer
-error-discriminant: error
+error-discrimination:
+  strategy: property
+  property-name: error
