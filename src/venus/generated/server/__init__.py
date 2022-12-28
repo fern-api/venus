@@ -3,6 +3,7 @@
 from .resources import (
     AbstractOrganizationService,
     AbstractRegistryService,
+    AbstractUserService,
     CheckRegistryPermissionRequest,
     CreateOrganizationRequest,
     GenerateRegistryTokensRequest,
@@ -29,6 +30,7 @@ from .security import ApiAuth
 __all__ = [
     "AbstractOrganizationService",
     "AbstractRegistryService",
+    "AbstractUserService",
     "ApiAuth",
     "CheckRegistryPermissionRequest",
     "CreateOrganizationRequest",

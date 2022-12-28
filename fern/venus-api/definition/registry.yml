@@ -3,9 +3,6 @@ imports:
   commons: commons.yml
 
 types:
-  GenerateRegistryTokensRequest:
-    properties:
-      organizationId: commons.OrganizationId
 
   RegistryTokens:
     properties:
@@ -21,20 +18,10 @@ types:
       username: string
       password: string
 
-  CheckRegistryPermissionRequest:
-    properties:
-      organizationId: commons.OrganizationId
-      token: optional<RegistryToken>
-
   RegistryToken:
     union:
       npm: NpmRegistryToken
       maven: MavenRegistryToken
-
-  RevokeTokenRequest:
-    properties:
-      organizationId: commons.OrganizationId
-      token: string
 
 services:
   http:
@@ -45,7 +32,11 @@ services:
         generateRegistryTokens:
           method: POST
           path: /generate-tokens
-          request: GenerateRegistryTokensRequest
+          request:
+            name: GenerateRegistryTokensRequest
+            body:
+              properties:
+                organizationId: commons.OrganizationId
           response: RegistryTokens
           errors:
             - commons.UnauthorizedError
@@ -54,7 +45,12 @@ services:
         hasRegistryPermission:
           method: POST
           path: /check-permissions
-          request: CheckRegistryPermissionRequest
+          request:
+            name: CheckRegistryPermissionRequest
+            body:
+              properties:
+                organizationId: commons.OrganizationId
+                token: optional<RegistryToken>
           response: boolean
           errors:
             - commons.UnauthorizedError
@@ -63,7 +59,12 @@ services:
         revokeToken:
           method: POST
           path: /revoke-token
-          request: RevokeTokenRequest
+          request:
+            name: RevokeTokenRequest
+            body:
+              properties:
+                organizationId: commons.OrganizationId
+                token: string
           errors:
             - commons.UnauthorizedError
             - OrganizationNotFoundError

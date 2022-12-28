@@ -3,20 +3,10 @@
 imports:
   commons: commons.yml
 types:
-  CreateOrganizationRequest:
-    properties:
-      organizationId: commons.OrganizationId
-      artifactReadRequiresToken:
-        type: optional<boolean>
-        docs: Defaults to False
 
   Organization:
     properties:
       organizationId: commons.OrganizationId
-      artifactReadRequiresToken: boolean
-
-  UpdateOrganizationRequest:
-    properties:
       artifactReadRequiresToken: boolean
 
   UserReference:
@@ -37,7 +27,14 @@ services:
         create:
           method: POST
           path: /create
-          request: CreateOrganizationRequest
+          request:
+            name: CreateOrganizationRequest
+            body:
+              properties:
+                organizationId: commons.OrganizationId
+                artifactReadRequiresToken:
+                  type: optional<boolean>
+                  docs: Defaults to False
           errors:
             - commons.UnauthorizedError
             - OrganizationAlreadyExistsError
@@ -47,7 +44,11 @@ services:
           path: /{orgId}/update
           path-parameters:
             orgId: commons.OrganizationId
-          request: UpdateOrganizationRequest
+          request:
+            name: UpdateOrganizationRequest
+            body:
+              properties:
+                artifactReadRequiresToken: boolean
           errors:
             - commons.UnauthorizedError
 
@@ -63,7 +64,8 @@ services:
         getMyOrganizationFromScopedToken:
           method: POST
           path: /myself
-          docs: Returns the org for a scoped token. The token is limited to one organization.
+          docs: Returns the org for a scoped token. The token is limited to one
+            organization.
           auth: true
           response: Organization
           errors:

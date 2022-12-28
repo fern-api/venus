@@ -20,11 +20,12 @@ from .registry import (
     RegistryTokens,
     RevokeTokenRequest,
 )
-from .user import OrganizationsPage, User, UserAleadyExistsError
+from .user import AbstractUserService, OrganizationsPage, User, UserAleadyExistsError
 
 __all__ = [
     "AbstractOrganizationService",
     "AbstractRegistryService",
+    "AbstractUserService",
     "CheckRegistryPermissionRequest",
     "CreateOrganizationRequest",
     "GenerateRegistryTokensRequest",

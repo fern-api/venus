@@ -13,13 +13,19 @@ from .core.exceptions import default_exception_handler, fern_http_exception_hand
 from .core.exceptions.fern_http_exception import FernHTTPException
 from .resources.organization.service import AbstractOrganizationService
 from .resources.registry.service import AbstractRegistryService
+from .resources.user.service import AbstractUserService
 
 
 def register(
-    app: fastapi.FastAPI, *, organization: AbstractOrganizationService, registry: AbstractRegistryService
+    app: fastapi.FastAPI,
+    *,
+    organization: AbstractOrganizationService,
+    registry: AbstractRegistryService,
+    user: AbstractUserService
 ) -> None:
     app.include_router(__register_service(organization))
     app.include_router(__register_service(registry))
+    app.include_router(__register_service(user))
 
     app.add_exception_handler(FernHTTPException, fern_http_exception_handler)
     app.add_exception_handler(starlette.exceptions.HTTPException, http_exception_handler)

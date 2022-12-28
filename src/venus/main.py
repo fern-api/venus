@@ -5,10 +5,16 @@ from fastapi import FastAPI
 from venus.generated.server.register import register
 from venus.organization_service import OrganizationsService
 from venus.registry_service import RegistryService
+from venus.user_service import UserService
 
 
 app = FastAPI()
-register(app, organization=OrganizationsService(), registry=RegistryService())
+register(
+    app,
+    organization=OrganizationsService(),
+    registry=RegistryService(),
+    user=UserService(),
+)
 
 
 @app.get("/health")
