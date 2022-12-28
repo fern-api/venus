@@ -44,7 +44,7 @@ class AbstractUserService(AbstractFernService):
     """
 
     @classmethod
-    def _init_fern(cls, router: fastapi.APIRouter) -> None: 
+    def _init_fern(cls, router: fastapi.APIRouter) -> None:
         cls.__init_get_myself(router=router)
         cls.__init_get_my_organizations(router=router)
         cls.__init_belongs_to_organization(router=router)
