@@ -33,6 +33,7 @@ async function main() {
             AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
             AUTH0_MGMT_AUDIENCE: "https://fern-dev.us.auth0.com/api/v2/",
             NURSERY_ORIGIN: `http://nursery.${devInfo.cloudMapNamespaceInfo.namespaceName}:8080`,
+            AUTH0_VENUS_AUDIENCE: "venus-dev",
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
@@ -53,6 +54,7 @@ async function main() {
             AUTH0_CLIENT_SECRET: getEnvVarOrThrow("AUTH0_CLIENT_SECRET"),
             AUTH0_MGMT_AUDIENCE: "https://fern-prod.us.auth0.com/api/v2/",
             NURSERY_ORIGIN: `http://nursery.${prodInfo.cloudMapNamespaceInfo.namespaceName}:8080`,
+            AUTH0_VENUS_AUDIENCE: "venus-prod",
           },
           {
             env: { account: "985111089818", region: "us-east-1" },
