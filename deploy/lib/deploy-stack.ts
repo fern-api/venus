@@ -22,6 +22,7 @@ export interface VenusEnvVariables {
   AUTH0_CLIENT_SECRET: string;
   NURSERY_ORIGIN: string;
   AUTH0_MGMT_AUDIENCE: string;
+  AUTH0_VENUS_AUDIENCE: string;
 }
 
 export class VenusDeployStack extends Stack {

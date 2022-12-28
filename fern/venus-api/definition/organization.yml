@@ -70,7 +70,6 @@ services:
           response: Organization
           errors:
             - commons.UnauthorizedError
-
         # addMember:
         #   method: POST
         #   path: /add-members
