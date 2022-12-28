@@ -1,13 +1,15 @@
 from fastapi import Depends
+
 import venus.generated.server as fern
 
-from venus.auth.auth0_client import AbstractAuth0Client, Auth0Client
+from venus.auth.auth0_client import Auth0Client
 from venus.generated.server.resources.user.types.organizations_page import (
     OrganizationsPage,
 )
 from venus.generated.server.resources.user.types.user import User
 from venus.generated.server.security import ApiAuth
-from venus.global_dependencies import get_auth0, get_nursery_client
+from venus.global_dependencies import get_auth0
+from venus.global_dependencies import get_nursery_client
 from venus.nursery.client import NurseryApiClient
 
 

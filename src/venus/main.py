@@ -1,10 +1,8 @@
 import uvicorn
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
 from venus.generated.server.register import register
-from venus.global_dependencies import get_auth0
-from venus.global_dependencies import get_nursery_client
 from venus.organization_service import OrganizationsService
 from venus.registry_service import RegistryService
 from venus.user_service import UserService
