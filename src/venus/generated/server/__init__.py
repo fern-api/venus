@@ -4,6 +4,7 @@ from .resources import (
     AbstractOrganizationService,
     AbstractRegistryService,
     AbstractUserService,
+    AddUserToOrgRequest,
     CheckRegistryPermissionRequest,
     CreateOrganizationRequest,
     GenerateRegistryTokensRequest,
@@ -23,7 +24,6 @@ from .resources import (
     UserAleadyExistsError,
     UserId,
     UserIdDoesNotExistError,
-    UserReference,
 )
 from .security import ApiAuth
 
@@ -31,6 +31,7 @@ __all__ = [
     "AbstractOrganizationService",
     "AbstractRegistryService",
     "AbstractUserService",
+    "AddUserToOrgRequest",
     "ApiAuth",
     "CheckRegistryPermissionRequest",
     "CreateOrganizationRequest",
@@ -51,5 +52,4 @@ __all__ = [
     "UserAleadyExistsError",
     "UserId",
     "UserIdDoesNotExistError",
-    "UserReference",
 ]

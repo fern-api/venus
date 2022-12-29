@@ -14,7 +14,9 @@ from ...core.exceptions.fern_http_exception import FernHTTPException
 from ...core.route_args import get_route_args
 from ...security import ApiAuth, FernAuth
 from ..commons.errors.unauthorized_error import UnauthorizedError
+from ..commons.errors.user_id_does_not_exist_error import UserIdDoesNotExistError
 from .errors.organization_already_exists_error import OrganizationAlreadyExistsError
+from .types.add_user_to_org_request import AddUserToOrgRequest
 from .types.create_organization_request import CreateOrganizationRequest
 from .types.organization import Organization
 from .types.update_organization_request import UpdateOrganizationRequest
@@ -49,6 +51,10 @@ class AbstractOrganizationService(AbstractFernService):
         """
         ...
 
+    @abc.abstractmethod
+    def add_user(self, *, body: AddUserToOrgRequest, auth: ApiAuth) -> None:
+        ...
+
     """
     Below are internal methods used by Fern to register your implementation.
     You can ignore them.
@@ -60,6 +66,7 @@ class AbstractOrganizationService(AbstractFernService):
         cls.__init_update(router=router)
         cls.__init_get(router=router)
         cls.__init_get_my_organization_from_scoped_token(router=router)
+        cls.__init_add_user(router=router)
 
     @classmethod
     def __init_create(cls, router: fastapi.APIRouter) -> None:
@@ -217,4 +224,44 @@ class AbstractOrganizationService(AbstractFernService):
             response_model=Organization,
             description=cls.get_my_organization_from_scoped_token.__doc__,
             **get_route_args(cls.get_my_organization_from_scoped_token, default_tag="organization"),
+        )(wrapper)
+
+    @classmethod
+    def __init_add_user(cls, router: fastapi.APIRouter) -> None:
+        endpoint_function = inspect.signature(cls.add_user)
+        new_parameters: typing.List[inspect.Parameter] = []
+        for index, (parameter_name, parameter) in enumerate(endpoint_function.parameters.items()):
+            if index == 0:
+                new_parameters.append(parameter.replace(default=fastapi.Depends(cls)))
+            elif parameter_name == "body":
+                new_parameters.append(parameter.replace(default=fastapi.Body(...)))
+            elif parameter_name == "auth":
+                new_parameters.append(parameter.replace(default=fastapi.Depends(FernAuth)))
+            else:
+                new_parameters.append(parameter)
+        setattr(cls.add_user, "__signature__", endpoint_function.replace(parameters=new_parameters))
+
+        @functools.wraps(cls.add_user)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
+            try:
+                return cls.add_user(*args, **kwargs)
+            except (UnauthorizedError, UserIdDoesNotExistError) as e:
+                raise e
+            except FernHTTPException as e:
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'add_user' unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "the endpoint's errors list in your Fern Definition."
+                )
+                raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.add_user.__globals__)
+
+        router.post(
+            path="/organizations/add-user",
+            status_code=starlette.status.HTTP_204_NO_CONTENT,
+            description=cls.add_user.__doc__,
+            **get_route_args(cls.add_user, default_tag="organization"),
         )(wrapper)

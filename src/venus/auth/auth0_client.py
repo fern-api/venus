@@ -25,6 +25,14 @@ class AbstractVenusAuth0Client(ABC):
     def get_user(self, *, user_id: str) -> User:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_orgs_for_user(self, *, user_id: str) -> set[str]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def add_user_to_org(self, *, user_id: str, org_id: str) -> None:
+        raise NotImplementedError
+
 
 class VenusAuth0Client(AbstractVenusAuth0Client):
     def __init__(self, auth0: Auth0):
@@ -46,6 +54,21 @@ class VenusAuth0Client(AbstractVenusAuth0Client):
             username=get_user_response["nickname"],
             user_id=get_user_response["user_id"],
             email=get_user_response["email"],
+        )
+
+    def get_orgs_for_user(self, *, user_id: str) -> set[str]:
+        # TODO(dsinghvi): Fix, page through all orgs
+        list_organizatins_response = self.auth0.users.list_organizations(
+            user_id
+        )
+        organization_ids = set()
+        for organization in list_organizatins_response["organizations"]:
+            organization_ids.add(organization["id"])
+        return organization_ids
+
+    def add_user_to_org(self, *, user_id: str, org_id: str) -> None:
+        self.auth0.organizations.create_organization_members(
+            org_id, {"members": [user_id]}
         )
 
 

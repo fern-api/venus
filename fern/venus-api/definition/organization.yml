@@ -9,15 +9,6 @@ types:
       organizationId: commons.OrganizationId
       artifactReadRequiresToken: boolean
 
-  UserReference:
-    union:
-      userId:
-        type: commons.UserId
-        key: userId
-      emailAddress:
-        type: string
-        key: emailAddress
-
 services:
   http:
     OrganizationService:
@@ -70,13 +61,20 @@ services:
           response: Organization
           errors:
             - commons.UnauthorizedError
-        # addMember:
-        #   method: POST
-        #   path: /add-members
-        #   request: UserReference
-        #   errors:
-        #     - commons.UnauthorizedError
-        #     - commons.UserIdDoesNotExistError
+
+        addUser:
+          method: POST
+          path: /add-user
+          auth: true
+          request:
+            name: AddUserToOrgRequest
+            body:
+              properties:
+                userId: commons.UserId
+                orgId: commons.OrganizationId
+          errors:
+            - commons.UnauthorizedError
+            - commons.UserIdDoesNotExistError
 
 errors:
   OrganizationAlreadyExistsError:
