@@ -2,13 +2,13 @@
 
 from .errors import OrganizationAlreadyExistsError
 from .service import AbstractOrganizationService
-from .types import CreateOrganizationRequest, Organization, UpdateOrganizationRequest, UserReference
+from .types import AddUserToOrgRequest, CreateOrganizationRequest, Organization, UpdateOrganizationRequest
 
 __all__ = [
     "AbstractOrganizationService",
+    "AddUserToOrgRequest",
     "CreateOrganizationRequest",
     "Organization",
     "OrganizationAlreadyExistsError",
     "UpdateOrganizationRequest",
-    "UserReference",
 ]

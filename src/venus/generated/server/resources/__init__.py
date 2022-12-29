@@ -3,11 +3,11 @@
 from .commons import OrganizationId, UnauthorizedError, UserId, UserIdDoesNotExistError
 from .organization import (
     AbstractOrganizationService,
+    AddUserToOrgRequest,
     CreateOrganizationRequest,
     Organization,
     OrganizationAlreadyExistsError,
     UpdateOrganizationRequest,
-    UserReference,
 )
 from .registry import (
     AbstractRegistryService,
@@ -26,6 +26,7 @@ __all__ = [
     "AbstractOrganizationService",
     "AbstractRegistryService",
     "AbstractUserService",
+    "AddUserToOrgRequest",
     "CheckRegistryPermissionRequest",
     "CreateOrganizationRequest",
     "GenerateRegistryTokensRequest",
@@ -45,5 +46,4 @@ __all__ = [
     "UserAleadyExistsError",
     "UserId",
     "UserIdDoesNotExistError",
-    "UserReference",
 ]

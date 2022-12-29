@@ -1,3 +1,5 @@
+import typing
+
 from typing import Dict
 from uuid import uuid4
 
@@ -19,6 +21,12 @@ class MockVenusAuth0Client(AbstractVenusAuth0Client):
 
     def get_user(self, *, user_id: str) -> User:
         return super().get_user(user_id=user_id)
+
+    def get_orgs_for_user(self, *, user_id: str) -> typing.Set[str]:
+        return super().get_orgs_for_user(user_id=user_id)
+
+    def add_user_to_org(self, *, user_id: str, org_id: str) -> None:
+        return super().add_user_to_org(user_id=user_id, org_id=org_id)
 
 
 class MockAuth0Client(AbstractAuth0Client):
