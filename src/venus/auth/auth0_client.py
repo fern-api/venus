@@ -1,4 +1,5 @@
 import traceback
+import typing
 
 from abc import ABC
 from abc import abstractmethod
@@ -26,7 +27,7 @@ class AbstractVenusAuth0Client(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_orgs_for_user(self, *, user_id: str) -> set[str]:
+    def get_orgs_for_user(self, *, user_id: str) -> typing.Set[str]:
         raise NotImplementedError
 
     @abstractmethod
@@ -56,7 +57,7 @@ class VenusAuth0Client(AbstractVenusAuth0Client):
             email=get_user_response["email"],
         )
 
-    def get_orgs_for_user(self, *, user_id: str) -> set[str]:
+    def get_orgs_for_user(self, *, user_id: str) -> typing.Set[str]:
         # TODO(dsinghvi): Fix, page through all orgs
         list_organizatins_response = self.auth0.users.list_organizations(
             user_id
