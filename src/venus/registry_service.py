@@ -1,13 +1,11 @@
 from fastapi import Depends
 from fern.nursery.pydantic.token import RevokeTokenRequest
+from fern.nursery.pydantic.token import CreateTokenRequest
 
 import venus.generated.server.resources as fern
 
 from venus.global_dependencies import get_nursery_client
 from venus.nursery.client import NurseryApiClient
-from venus.nursery.resources.token.types.create_token_request import (
-    CreateTokenRequest,
-)
 from venus.nursery.resources.token.types.get_token_metadata_request import (
     GetTokenMetadataRequest,
 )
@@ -21,7 +19,9 @@ class RegistryService(fern.AbstractRegistryService):
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> fern.RegistryTokens:
         create_token_response = nursery_client.token.create(
-            body=CreateTokenRequest(owner_id=body.organization_id.get_as_str())
+            body=CreateTokenRequest(
+                owner_id=body.organization_id.get_as_str(), prefix="fern"
+            )
         )
         if create_token_response.ok:
             return fern.RegistryTokens(
