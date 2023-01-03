@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 
 import requests
 
+from fern.nursery import CreateTokenRequest
 from fern.nursery import RevokeTokenRequest
 from fern.nursery import TokenMetadata
 from pydantic import parse_obj_as
@@ -11,7 +12,6 @@ from ..._core import Response
 from ..._core.response import FailedResponse
 from ..._core.response import SuccessResponse
 from ..owner import OwnerId
-from .types import CreateTokenRequest
 from .types import CreateTokenResponse
 from .types import GetTokenMetadataRequest
 

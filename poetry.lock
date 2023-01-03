@@ -189,7 +189,7 @@ test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.8.0)", "databases[sqlite] (
 
 [[package]]
 name = "fern-fern-nursery-model"
-version = "0.0.57"
+version = "0.0.60"
 description = ""
 category = "dev"
 optional = false
@@ -730,7 +730,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "efc4981a4a308734a74b679b0aeaceaa53c5b452b610c2941b8dde1dcb4fa200"
+content-hash = "075ba655b76985b72038c2fb6fc00f63f9860fa39eaa2e43dc7a7eeeff74ce9b"
 
 [metadata.files]
 anyio = [
@@ -895,8 +895,8 @@ fastapi = [
     {file = "fastapi-0.85.0.tar.gz", hash = "sha256:bb219cfafd0d2ccf8f32310c9a257a06b0210bd8e2a03706a6f5a9f9f1416878"},
 ]
 fern-fern-nursery-model = [
-    {file = "fern_fern_nursery_model-0.0.57-py3-none-any.whl", hash = "sha256:efbf307f629e52bdb91bdcfa662549f042e815cc8c86f96d1be26d5dab115bd2"},
-    {file = "fern_fern_nursery_model-0.0.57.tar.gz", hash = "sha256:9bb310c8ca2a2f96edcafe1ea470c7a96236a7dbb3047e6aa083fa227f114822"},
+    {file = "fern_fern_nursery_model-0.0.60-py3-none-any.whl", hash = "sha256:84aad5c7e6986aa74085c250ad35bc2bcd6db7ec86485442db6c2a17fcc73584"},
+    {file = "fern_fern_nursery_model-0.0.60.tar.gz", hash = "sha256:2ac9f212f134c732ceea4516ba0188042390c1322a4f4571753079bc7264ab75"},
 ]
 filelock = [
     {file = "filelock-3.8.0-py3-none-any.whl", hash = "sha256:617eb4e5eedc82fc5f47b6d61e4d11cb837c56cb4544e39081099fa17ad109d4"},
