@@ -1,6 +1,6 @@
 from fastapi import Depends
-from fern.nursery.pydantic.token import RevokeTokenRequest
 from fern.nursery.pydantic.token import CreateTokenRequest
+from fern.nursery.pydantic.token import RevokeTokenRequest
 
 import venus.generated.server.resources as fern
 

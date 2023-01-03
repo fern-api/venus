@@ -92,7 +92,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         token_status = get_token_metadata_response.body.status.get_as_union()
         if token_status.type == "expired" or token_status.type == "revoked":
             raise fern_commons.UnauthorizedError()
-        owner_id = get_token_metadata_response.body.owner_id.get_as_str()
+        owner_id = get_token_metadata_response.body.owner_id
         logging.debug(f"Token has owner id {owner_id}")
         return _get_owner(owner_id=owner_id, nursery_client=nursery_client)
 
