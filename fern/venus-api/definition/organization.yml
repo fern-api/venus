@@ -51,7 +51,7 @@ services:
           response: Organization
           errors:
             - commons.UnauthorizedError
-        
+
         isMember:
           method: POST
           auth: true
