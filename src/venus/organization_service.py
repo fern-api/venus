@@ -144,7 +144,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         )
 
 
-def is_valid_jwt(token):
+def is_valid_jwt(token: str) -> bool:
     try:
         jwt.decode(token, verify=True)
         return True
