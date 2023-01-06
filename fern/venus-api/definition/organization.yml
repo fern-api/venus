@@ -52,7 +52,16 @@ services:
           errors:
             - commons.UnauthorizedError
 
+        isMember:
+          method: POST
+          auth: true
+          path: /belongs-to-organization/{organizationId}
+          path-parameters:
+            organizationId: commons.OrganizationId
+          response: boolean
+
         getMyOrganizationFromScopedToken:
+          availability: deprecated
           method: POST
           path: /myself
           docs: Returns the org for a scoped token. The token is limited to one

@@ -1,5 +1,7 @@
 import logging
 
+import jwt
+
 from fastapi import Depends
 
 import venus.generated.server.resources.commons as fern_commons
@@ -71,6 +73,38 @@ class OrganizationsService(fern.AbstractOrganizationService):
                 owner_update_response.error,
             )
 
+    def is_member(
+        self,
+        *,
+        organization_id: str,
+        auth: ApiAuth,
+        auth0_client: Auth0Client = Depends(get_auth0),
+        nursery_client: NurseryApiClient = Depends(get_nursery_client),
+    ) -> bool:
+        if auth.token.startswith("fern"):
+            try:
+                owner_id = _get_owner_id_from_token(
+                    auth=auth, nursery_client=nursery_client
+                )
+                return owner_id == organization_id
+            except UnauthorizedError:
+                return False
+        elif is_valid_jwt(auth.token):
+            user_id = auth0_client.get_user_id_from_token(auth.token)
+            nursery_owner = _get_nursery_owner(
+                owner_id=organization_id, nursery_client=nursery_client
+            )
+            org_ids = auth0_client.get().get_orgs_for_user(user_id=user_id)
+            return nursery_owner.auth0_id in org_ids
+        else:  # assume it is a legacy unprefixed nursery token
+            try:
+                owner_id = _get_owner_id_from_token(
+                    auth=auth, nursery_client=nursery_client
+                )
+                return owner_id == organization_id
+            except UnauthorizedError:
+                return False
+
     def get(
         self,
         org_id: str,
@@ -84,15 +118,9 @@ class OrganizationsService(fern.AbstractOrganizationService):
         auth: ApiAuth,
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> Organization:
-        get_token_metadata_response = nursery_client.token.get_token_metadata(
-            body=GetTokenMetadataRequest(token=auth.token)
+        owner_id = _get_owner_id_from_token(
+            auth=auth, nursery_client=nursery_client
         )
-        if not get_token_metadata_response.ok:
-            raise fern_commons.UnauthorizedError()
-        token_status = get_token_metadata_response.body.status.get_as_union()
-        if token_status.type == "expired" or token_status.type == "revoked":
-            raise fern_commons.UnauthorizedError()
-        owner_id = get_token_metadata_response.body.owner_id
         logging.debug(f"Token has owner id {owner_id}")
         return _get_owner(owner_id=owner_id, nursery_client=nursery_client)
 
@@ -114,6 +142,31 @@ class OrganizationsService(fern.AbstractOrganizationService):
         auth0_client.get().add_user_to_org(
             user_id=user_id, org_id=nursery_owner_data.auth0_id
         )
+
+
+def is_valid_jwt(token: str) -> bool:
+    try:
+        jwt.decode(token, verify=True)
+        return True
+    except Exception:
+        return False
+
+
+def _get_owner_id_from_token(
+    *,
+    auth: ApiAuth,
+    nursery_client: NurseryApiClient = Depends(get_nursery_client),
+) -> str:
+    get_token_metadata_response = nursery_client.token.get_token_metadata(
+        body=GetTokenMetadataRequest(token=auth.token)
+    )
+    if not get_token_metadata_response.ok:
+        raise fern_commons.UnauthorizedError()
+    token_status = get_token_metadata_response.body.status.get_as_union()
+    if token_status.type == "expired" or token_status.type == "revoked":
+        raise fern_commons.UnauthorizedError()
+    owner_id = get_token_metadata_response.body.owner_id
+    return owner_id
 
 
 def _get_owner(
