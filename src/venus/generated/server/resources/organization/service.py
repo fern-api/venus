@@ -45,6 +45,10 @@ class AbstractOrganizationService(AbstractFernService):
         ...
 
     @abc.abstractmethod
+    def is_member(self, *, organization_id: str, auth: ApiAuth) -> bool:
+        ...
+
+    @abc.abstractmethod
     def get_my_organization_from_scoped_token(self, *, auth: ApiAuth) -> Organization:
         """
         Returns the org for a scoped token. The token is limited to one organization.
@@ -65,6 +69,7 @@ class AbstractOrganizationService(AbstractFernService):
         cls.__init_create(router=router)
         cls.__init_update(router=router)
         cls.__init_get(router=router)
+        cls.__init_is_member(router=router)
         cls.__init_get_my_organization_from_scoped_token(router=router)
         cls.__init_add_user(router=router)
 
@@ -182,6 +187,44 @@ class AbstractOrganizationService(AbstractFernService):
             response_model=Organization,
             description=cls.get.__doc__,
             **get_route_args(cls.get, default_tag="organization"),
+        )(wrapper)
+
+    @classmethod
+    def __init_is_member(cls, router: fastapi.APIRouter) -> None:
+        endpoint_function = inspect.signature(cls.is_member)
+        new_parameters: typing.List[inspect.Parameter] = []
+        for index, (parameter_name, parameter) in enumerate(endpoint_function.parameters.items()):
+            if index == 0:
+                new_parameters.append(parameter.replace(default=fastapi.Depends(cls)))
+            elif parameter_name == "organization_id":
+                new_parameters.append(parameter.replace(default=fastapi.Path(...)))
+            elif parameter_name == "auth":
+                new_parameters.append(parameter.replace(default=fastapi.Depends(FernAuth)))
+            else:
+                new_parameters.append(parameter)
+        setattr(cls.is_member, "__signature__", endpoint_function.replace(parameters=new_parameters))
+
+        @functools.wraps(cls.is_member)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> bool:
+            try:
+                return cls.is_member(*args, **kwargs)
+            except FernHTTPException as e:
+                logging.getLogger(f"{cls.__module__}.{cls.__name__}").warn(
+                    f"Endpoint 'is_member' unexpectedly threw {e.__class__.__name__}. "
+                    + f"If this was intentional, please add {e.__class__.__name__} to "
+                    + "the endpoint's errors list in your Fern Definition."
+                )
+                raise e
+
+        # this is necessary for FastAPI to find forward-ref'ed type hints.
+        # https://github.com/tiangolo/fastapi/pull/5077
+        wrapper.__globals__.update(cls.is_member.__globals__)
+
+        router.post(
+            path="/organizations/belongs-to-organization/{organization_id}",
+            response_model=bool,
+            description=cls.is_member.__doc__,
+            **get_route_args(cls.is_member, default_tag="organization"),
         )(wrapper)
 
     @classmethod

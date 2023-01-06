@@ -3,6 +3,9 @@ from fastapi import Depends
 import venus.generated.server as fern
 
 from venus.auth.auth0_client import Auth0Client
+from venus.generated.server.resources.commons.types.organization_id import (
+    OrganizationId,
+)
 from venus.generated.server.resources.user.types.organizations_page import (
     OrganizationsPage,
 )
@@ -29,9 +32,11 @@ class UserService(fern.AbstractUserService):
     def get_my_organizations(
         self, *, page_id: int, auth: ApiAuth
     ) -> OrganizationsPage:
-        raise NotImplementedError()
-
-    def belongs_to_organization(
-        self, *, organization_id: str, auth: ApiAuth
-    ) -> bool:
-        raise NotImplementedError()
+        user_id = self.auth0_client.get_user_id_from_token(auth.token)
+        org_ids = self.auth0_client.get().get_orgs_for_user(user_id=user_id)
+        return OrganizationsPage(
+            organizations=[
+                OrganizationId.from_str(org_id) for org_id in org_ids
+            ],
+            next_page=None,
+        )
