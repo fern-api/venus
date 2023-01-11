@@ -14,7 +14,7 @@ groups:
         output:
           location: maven
           url: maven.buildwithfern.com
-          package-name: com.fern.fern:venus-api-sdk
+          coordinate: com.fern.fern:venus-api-sdk
           username: fern
           password: ${FERN_ORG_TOKEN_PROD}
       - name: fernapi/fern-typescript-sdk
