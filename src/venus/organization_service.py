@@ -30,10 +30,13 @@ logger = logging.getLogger(__name__)
 class OrganizationsService(fern.AbstractOrganizationService):
     def create(
         self,
+        *,
         body: fern.CreateOrganizationRequest,
+        auth: ApiAuth,
         auth0_client: Auth0Client = Depends(get_auth0),
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> None:
+        user_id = auth0_client.get_user_id_from_token(auth.token)
         auth0_org_id = auth0_client.get().create_organization(
             org_id=body.organization_id.get_as_str()
         )
@@ -43,6 +46,9 @@ class OrganizationsService(fern.AbstractOrganizationService):
                 owner_id=body.organization_id.get_as_str(),
                 data=nursery_org_data,
             )
+        )
+        auth0_client.get().add_user_to_org(
+            user_id=user_id, org_id=auth0_org_id
         )
 
     def update(
