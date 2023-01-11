@@ -20,6 +20,7 @@ def test_generate_and_use_token(nursery_docker) -> None:  # type: ignore
     create_org_response = client.post(
         "/organizations/create",
         json={"organizationId": org_id, "artifactReadRequiresToken": True},
+        headers={"Authorization": "Bearer dummy"},
     )
     assert_valid_status_code(create_org_response.status_code, "create_org")
 
