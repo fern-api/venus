@@ -1,7 +1,5 @@
 import logging
 
-import jwt
-
 from fastapi import Depends
 
 import venus.generated.server.resources.commons as fern_commons
@@ -89,7 +87,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
                 return owner_id == organization_id
             except UnauthorizedError:
                 return False
-        elif is_valid_jwt(auth.token):
+        elif self.is_valid_jwt(auth.token, auth0_client):
             user_id = auth0_client.get_user_id_from_token(auth.token)
             nursery_owner = _get_nursery_owner(
                 owner_id=organization_id, nursery_client=nursery_client
@@ -143,13 +141,12 @@ class OrganizationsService(fern.AbstractOrganizationService):
             user_id=user_id, org_id=nursery_owner_data.auth0_id
         )
 
-
-def is_valid_jwt(token: str) -> bool:
-    try:
-        jwt.decode(token, verify=True)
-        return True
-    except Exception:
-        return False
+    def is_valid_jwt(self, token: str, auth0_client: Auth0Client) -> bool:
+        try:
+            auth0_client.get_user_id_from_token(token=token)
+            return True
+        except Exception:
+            return False
 
 
 def _get_owner_id_from_token(
