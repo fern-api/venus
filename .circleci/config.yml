@@ -129,6 +129,8 @@ workflows:
               only: main
             tags:
               only: /.*/
+          context: 
+            - fern-tokens
           requires:
             - check
             - test
@@ -142,7 +144,6 @@ workflows:
             - github
             - fern-dev
             - venus-dev
-            - fern-tokens
           requires:
             - check
             - test
