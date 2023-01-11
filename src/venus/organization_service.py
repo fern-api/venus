@@ -80,6 +80,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
         nursery_client: NurseryApiClient = Depends(get_nursery_client),
     ) -> bool:
         if auth.token.startswith("fern"):
+            print(auth.token, "Token starts with fern, it is a nursery token")
             try:
                 owner_id = _get_owner_id_from_token(
                     auth=auth, nursery_client=nursery_client
@@ -88,6 +89,7 @@ class OrganizationsService(fern.AbstractOrganizationService):
             except UnauthorizedError:
                 return False
         elif self.is_valid_jwt(auth.token, auth0_client):
+            print(auth.token, "Token is a valid JWT, it is a user token")
             user_id = auth0_client.get_user_id_from_token(auth.token)
             nursery_owner = _get_nursery_owner(
                 owner_id=organization_id, nursery_client=nursery_client
@@ -95,6 +97,10 @@ class OrganizationsService(fern.AbstractOrganizationService):
             org_ids = auth0_client.get().get_orgs_for_user(user_id=user_id)
             return nursery_owner.auth0_id in org_ids
         else:  # assume it is a legacy unprefixed nursery token
+            print(
+                auth.token,
+                "Token neither starts with Fern or is a JWT, it is a nursery token",
+            )
             try:
                 owner_id = _get_owner_id_from_token(
                     auth=auth, nursery_client=nursery_client
