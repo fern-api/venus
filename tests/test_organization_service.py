@@ -19,7 +19,9 @@ def test_create_and_update_org(nursery_docker):  # type: ignore
     # create_org
     org_id = str(uuid4())
     create_org_response = client.post(
-        "/organizations/create", json={"organizationId": org_id}
+        "/organizations/create",
+        json={"organizationId": org_id},
+        headers={"Authorization": "Bearer dummy"},
     )
     assert create_org_response.status_code == 204
     # get org from nursery

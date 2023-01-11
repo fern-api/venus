@@ -33,7 +33,7 @@ class AbstractOrganizationService(AbstractFernService):
     """
 
     @abc.abstractmethod
-    def create(self, *, body: CreateOrganizationRequest) -> None:
+    def create(self, *, body: CreateOrganizationRequest, auth: ApiAuth) -> None:
         ...
 
     @abc.abstractmethod
@@ -82,6 +82,8 @@ class AbstractOrganizationService(AbstractFernService):
                 new_parameters.append(parameter.replace(default=fastapi.Depends(cls)))
             elif parameter_name == "body":
                 new_parameters.append(parameter.replace(default=fastapi.Body(...)))
+            elif parameter_name == "auth":
+                new_parameters.append(parameter.replace(default=fastapi.Depends(FernAuth)))
             else:
                 new_parameters.append(parameter)
         setattr(cls.create, "__signature__", endpoint_function.replace(parameters=new_parameters))
