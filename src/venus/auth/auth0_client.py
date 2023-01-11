@@ -10,10 +10,14 @@ from typing import Optional
 import jwt
 
 from auth0.v3.authentication import GetToken
+from auth0.v3.exceptions import Auth0Error
 from auth0.v3.management import Auth0
 
 from venus.config import VenusConfig
 from venus.generated.server.resources.commons import UnauthorizedError
+from venus.generated.server.resources.organization import (
+    OrganizationAlreadyExistsError,
+)
 from venus.generated.server.resources.user.types.user import User
 
 
@@ -40,9 +44,14 @@ class VenusAuth0Client(AbstractVenusAuth0Client):
         self.auth0 = auth0
 
     def create_organization(self, *, org_id: str) -> str:
-        create_auth0_organization_response = (
-            self.auth0.organizations.create_organization({"name": org_id})
-        )
+        try:
+            create_auth0_organization_response = (
+                self.auth0.organizations.create_organization({"name": org_id})
+            )
+        except Auth0Error as e:
+            if e.status_code == 409:
+                print(f"An organization with name {org_id} already exists")
+                raise OrganizationAlreadyExistsError()
         print(
             "Created organization in auth0. Received response: ",
             create_auth0_organization_response,
