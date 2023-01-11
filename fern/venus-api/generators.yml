@@ -11,5 +11,16 @@ groups:
     generators:
       - name: fernapi/fern-java-sdk
         version: 0.0.130
+        output:
+          location: maven
+          url: maven.buildwithfern.com
+          package-name: com.fern.fern:venus-api-sdk
+          username: fern
+          password: ${FERN_ORG_TOKEN_PROD}
       - name: fernapi/fern-typescript-sdk
         version: 0.0.241
+        output:
+          location: npm
+          url: npm.buildwithfern.com
+          package-name: '@fern-fern/venus-api-sdk'
+          token: ${FERN_ORG_TOKEN_PROD}

@@ -16,7 +16,8 @@ jobs:
       - run:
           name: Verify generated files are up to date
           command: |
-            fern generate
+            export FERN_TOKEN="${FERN_ORG_TOKEN_PROD}"
+            fern generate --log-level debug
             git --no-pager diff --exit-code
 
 
@@ -54,8 +55,9 @@ jobs:
           name: Install fern
           command: sudo npm install -g fern-api
       - run: | 
+          export FERN_TOKEN="${FERN_ORG_TOKEN_PROD}"
           git_version="$(scripts/git-version.sh)"
-          fern generate --group sdks --version "${git_version}"
+          fern generate --group sdks --version "${git_version}" --log-level debug
   
   publish-docker: 
     machine: 
@@ -107,6 +109,9 @@ workflows:
     jobs:
       - fern-check:
           filters: { tags: { only: /.*/ } }
+          context: 
+            - fern-tokens
+
 
       - check:
           filters:
@@ -137,6 +142,7 @@ workflows:
             - github
             - fern-dev
             - venus-dev
+            - fern-tokens
           requires:
             - check
             - test
