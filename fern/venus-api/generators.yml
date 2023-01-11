@@ -18,7 +18,7 @@ groups:
           username: fern
           password: ${FERN_ORG_TOKEN_PROD}
       - name: fernapi/fern-typescript-sdk
-        version: 0.0.241
+        version: 0.0.256
         output:
           location: npm
           url: npm.buildwithfern.com
