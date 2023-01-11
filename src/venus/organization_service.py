@@ -99,7 +99,8 @@ class OrganizationsService(fern.AbstractOrganizationService):
         else:  # assume it is a legacy unprefixed nursery token
             print(
                 auth.token,
-                "Token neither starts with Fern or is a JWT, it is a nursery token",
+                "Token neither starts with Fern nor is a JWT."
+                "It is a nursery token.",
             )
             try:
                 owner_id = _get_owner_id_from_token(
