@@ -115,7 +115,7 @@ class Auth0Client(AbstractAuth0Client):
                 signing_key,
                 algorithms=["RS256"],
                 issuer=expected_issuer,
-                audience="venus-dev",
+                audience=self.config.auth0_venus_audience,
             )
             return payload["sub"]
         except Exception:
