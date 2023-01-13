@@ -24,3 +24,11 @@ groups:
           url: npm.buildwithfern.com
           package-name: '@fern-fern/venus-api-sdk'
           token: ${FERN_ORG_TOKEN_PROD}
+  docs:
+    generators:
+      - name: fernapi/fern-postman
+        version: 0.0.33
+        output:
+          location: postman
+          api-key: ${POSTMAN_API_KEY}
+          workspace-id: ${POSTMAN_WORKSPACE_ID}
