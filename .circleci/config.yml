@@ -58,6 +58,20 @@ jobs:
           export FERN_TOKEN="${FERN_ORG_TOKEN_PROD}"
           git_version="$(scripts/git-version.sh)"
           fern generate --group sdks --version "${git_version}" --log-level debug
+
+  generate-docs:
+    docker:
+      - image: cimg/node:current
+    resource_class: medium
+    steps:
+      - checkout
+      - run: 
+          name: Install fern
+          command: sudo npm install -g fern-api
+      - run: | 
+          export FERN_TOKEN="${FERN_ORG_TOKEN_PROD}"
+          git_version="$(scripts/git-version.sh)"
+          fern generate --group docs --version "${git_version}" --log-level debug
   
   publish-docker: 
     machine: 
@@ -131,6 +145,20 @@ workflows:
               only: /.*/
           context: 
             - fern-tokens
+          requires:
+            - check
+            - test
+      
+      - generate-docs: 
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /.*/
+          context: 
+            - fern-tokens
+            - postman
           requires:
             - check
             - test
